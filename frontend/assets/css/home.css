@@ -1,6 +1,6 @@
 
 .sport-showcase {
-    background: url('../img/hero-bg.jpg') center center no-repeat;
+    background: url('../img/banner1.jpeg') center center no-repeat;
     background-size: cover;
     height: 60vh;
     color: white;
@@ -8,6 +8,7 @@
     align-items: center;
     justify-content: center;
     text-align: center;
+    margin-top: 60px;
   }
   
   .sport-showcase h1 {
