@@ -1,0 +1,17 @@
+
+.sport-showcase {
+    background: url('../img/hero-bg.jpg') center center no-repeat;
+    background-size: cover;
+    height: 60vh;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  
+  .sport-showcase h1 {
+    font-size: 3rem;
+    font-weight: bold;
+  }
+  
