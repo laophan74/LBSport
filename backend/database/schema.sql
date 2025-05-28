@@ -29,6 +29,16 @@ CREATE TABLE cart (
   FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
 );
 
+CREATE TABLE reviews (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  product_id INT,
+  user_id INT,
+  rating INT CHECK (rating BETWEEN 1 AND 5),
+  comment TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
 -- Sample
 INSERT INTO users (username, password, email, role) VALUES
 ('admin', SHA2('admin123', 256), 'admin@lbsport.com', 'admin'),

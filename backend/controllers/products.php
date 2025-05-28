@@ -1,34 +1,32 @@
 <?php
+header('Content-Type: application/json');
 require('../includes/connect_db.php');
 
-header('Content-Type: application/json');
+// Kiểm tra nếu có truy vấn theo ID sản phẩm
+if (isset($_GET['id'])) {
+    $id = intval($_GET['id']);
+    $query = "SELECT * FROM products WHERE id = $id";
+    $result = mysqli_query($dbc, $query);
 
-$id = $_GET['id'] ?? null;
+    if ($row = mysqli_fetch_assoc($result)) {
+        echo json_encode($row);
+    } else {
+        echo json_encode(null);
+    }
 
-if ($id) {
-  // Fetch one product by ID
-  $stmt = mysqli_prepare($dbc, "SELECT * FROM products WHERE id = ?");
-  mysqli_stmt_bind_param($stmt, "i", $id);
-  mysqli_stmt_execute($stmt);
-  $result = mysqli_stmt_get_result($stmt);
-  $row = mysqli_fetch_assoc($result);
-  if ($row) {
-    // Update image path for frontend
-    $row['image'] = 'assets/img/' . basename($row['image']);
-  }
-  echo json_encode($row);
-} else {
-  // Fetch all products
-  $query = "SELECT * FROM products ORDER BY id ASC";
-  $result = mysqli_query($dbc, $query);
-
-  $products = [];
-  while ($row = mysqli_fetch_assoc($result)) {
-    // Update image path to match actual location relative to home.html
-    $row['image'] = 'assets/img/' . basename($row['image']);
-    $products[] = $row;
-  }
-
-  echo json_encode($products);
+    mysqli_close($dbc);
+    exit;
 }
+
+// Nếu không có id, trả về toàn bộ danh sách sản phẩm
+$query = "SELECT * FROM products";
+$result = mysqli_query($dbc, $query);
+
+$products = [];
+while ($row = mysqli_fetch_assoc($result)) {
+    $products[] = $row;
+}
+
+echo json_encode($products);
+mysqli_close($dbc);
 ?>
