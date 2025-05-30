@@ -13,37 +13,44 @@
     <div id="topbar"></div>
 
     <main class="d-flex align-items-center justify-content-center login-container">
-    <form class="login-form w-100" style="max-width: 450px;">
-        <h2 class="text-center mb-4">Login</h2>
+        <form class="login-form">
+            <h2 class="text-center mb-4">Login</h2>
 
-        <div class="d-grid gap-3" style="grid-template-columns: 1fr 2fr; align-items: center;">
-            <!-- Email Row -->
-            <label for="email" class="form-label text-end mb-0">Email</label>
-            <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
-
-            <!-- Password Row -->
-            <label for="password" class="form-label text-end mb-0">Password</label>
-            <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
-
-            <!-- Remember Me Checkbox -->
-            <div></div> <!-- empty cell for alignment -->
-            <div class="form-check">
-                <input type="checkbox" class="form-check-input" id="rememberMe">
-                <label class="form-check-label" for="rememberMe">Remember me</label>
+            <div class="mb-3 row">
+                <label for="email" class="col-sm-4 col-form-label text-sm-end">Email</label>
+                <div class="col-sm-8">
+                    <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+                </div>
             </div>
 
-            <!-- Submit Button -->
-            <div></div> <!-- empty cell for alignment -->
-            <button type="submit" class="btn btn-primary w-100">Login</button>
-        </div>
+            <div class="mb-3 row">
+                <label for="password" class="col-sm-4 col-form-label text-sm-end">Password</label>
+                <div class="col-sm-8">
+                    <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
+                </div>
+            </div>
 
-        <!-- Links -->
-        <div class="text-center mt-3">
-            <a href="#">Forgot password?</a> | 
-            <a href="#">Create account</a>
-        </div>
-    </form>
-</main>
+            <div class="mb-3 row">
+                <div class="offset-sm-4 col-sm-8">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="rememberMe">
+                        <label class="form-check-label" for="rememberMe">Remember me</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-3 row">
+                <div class="offset-sm-4 col-sm-8">
+                    <button type="submit" class="btn btn-primary w-100">Login</button>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <a href="#">Forgot password?</a> | 
+                <a href="#">Create account</a>
+            </div>
+        </form>
+    </main>
 
     <div id="footer"></div>
 
