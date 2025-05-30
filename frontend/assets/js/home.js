@@ -1,4 +1,4 @@
-// Load HTML components dynamically
+
 async function loadComponent(id, url) {
   const res = await fetch(url);
   const html = await res.text();
@@ -8,77 +8,56 @@ async function loadComponent(id, url) {
 loadComponent("topbar", "components/topbar.html");
 loadComponent("footer", "components/footer.html");
 
-// Utility function to split an array into chunks
-function chunkArray(arr, chunkSize) {
-  const chunks = [];
-  for (let i = 0; i < arr.length; i += chunkSize) {
-    chunks.push(arr.slice(i, i + chunkSize));
+// split array into chunks
+function chunkArray(array, size) {
+  const result = [];
+  for (let i = 0; i < array.length; i += size) {
+    result.push(array.slice(i, i + size));
   }
-  return chunks;
+  return result;
 }
 
-// Load product data and render it into the homepage
+function renderStars(rating) {
+  return Array.from({ length: 5 }, (_, i) =>
+    `<span class="text-warning">${i < rating ? "★" : "☆"}</span>`
+  ).join('');
+}
+
+// Load and display products
 async function loadProducts() {
   const res = await fetch("../backend/controllers/products.php");
   const products = await res.json();
 
-  const categories = {
-    football: [],
-    tennis: [],
-    badminton: []
-  };
+  const football = products.filter(p => p.name.toLowerCase().includes("shoe") || p.name.toLowerCase().includes("boot"));
+  const tennis = products.filter(p => p.name.toLowerCase().includes("tennis"));
+  const badminton = products.filter(p => p.name.toLowerCase().includes("badminton") || p.name.toLowerCase().includes("feather"));
 
-  const keywords = {
-    football: ["shoe", "boot", "cleat"],
-    tennis: ["tennis"],
-    badminton: ["badminton", "feather"]
-  };
-
-  // Classify products into categories based on keywords
-  for (const product of products) {
-    for (const cat in keywords) {
-      if (categories[cat].length >= 4) continue;
-      if (keywords[cat].some(keyword => product.name.toLowerCase().includes(keyword))) {
-        categories[cat].push(product);
-        break;
-      }
-    }
-  }
-
-  // Render each category with rows containing up to 4 products
-  for (const cat in categories) {
-    const container = document.getElementById(`${cat}-products`);
-    const rows = chunkArray(categories[cat], 4);
-
-    for (const row of rows) {
-      let rowHTML = `<div class="row">`;
-      for (const product of row) {
-        rowHTML += `
-          <div class="col-md-3 mb-4">
-            <div class="card product-card" onclick="window.location.href='product-detail.html?id=${product.id}'">
-              <img src="${product.image}" class="card-img-top" alt="${product.name}">
-              <div class="card-body">
-                <h5 class="card-title fw-bold">${product.name}</h5>
-                <p class="card-text text-warning">${renderStars(product.rating)}</p>
-                <p class="card-text text-primary">$${product.price}</p>
-              </div>
-            </div>
-          </div>
-        `;
-      }
-      rowHTML += `</div>`;
-      container.innerHTML += rowHTML;
-    }
-  }
+  renderCategory("football-products", football);
+  renderCategory("tennis-products", tennis);
+  renderCategory("badminton-products", badminton);
 }
 
-// Generate star rating in HTML
-function renderStars(rating) {
-  let stars = "";
-  for (let i = 1; i <= 5; i++) {
-    stars += `<span class="text-warning">${i <= rating ? "★" : "☆"}</span>`;
+// Render a product category into HTML
+function renderCategory(containerId, products) {
+  const container = document.getElementById(containerId);
+  const rows = chunkArray(products.slice(0, 4), 4);
+
+  for (const row of rows) {
+    const rowHTML = row.map(product => `
+      <div class="col-md-3 mb-4">
+        <div class="card product-card" onclick="window.location.href='product-detail.html?id=${product.id}'">
+          <img src="${product.image}" class="card-img-top" alt="${product.name}">
+          <div class="card-body">
+            <h5 class="card-title fw-bold">${product.name}</h5>
+            <p class="card-text text-warning">${renderStars(product.rating)}</p>
+            <p class="card-text text-primary">$${product.price}</p>
+          </div>
+        </div>
+      </div>
+    `).join("");
+
+    container.innerHTML += `<div class="row">${rowHTML}</div>`;
   }
-  return stars;
 }
 
 loadProducts();
