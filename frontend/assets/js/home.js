@@ -37,7 +37,7 @@ async function loadProducts() {
   // Classify products into categories based on keywords
   for (const product of products) {
     for (const cat in keywords) {
-      if (categories[cat].length >= 4) continue; // limit to 4 products per category
+      if (categories[cat].length >= 4) continue;
       if (keywords[cat].some(keyword => product.name.toLowerCase().includes(keyword))) {
         categories[cat].push(product);
         break;

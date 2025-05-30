@@ -2,7 +2,6 @@
 header('Content-Type: application/json');
 require('../includes/connect_db.php');
 
-// Lấy product_id từ query string
 if (!isset($_GET['product_id'])) {
     echo json_encode(['error' => 'Missing product_id']);
     exit;
@@ -10,7 +9,6 @@ if (!isset($_GET['product_id'])) {
 
 $product_id = intval($_GET['product_id']);
 
-// Truy vấn dữ liệu review từ bảng reviews và liên kết user
 $query = "
     SELECT r.rating, r.comment, r.created_at, u.username
     FROM reviews r
