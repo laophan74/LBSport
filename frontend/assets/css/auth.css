@@ -1,6 +1,7 @@
-body{
-      background-color: #f2f2f2;
-}
+body {
+    background-color: #f4f5f6;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
 
 .login-container {
     margin-top: 10vh;
