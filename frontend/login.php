@@ -6,12 +6,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'] ?? '';
     $password = $_POST['password'] ?? '';
 
-    $conn = new mysqli("localhost", "22121468", "Laobob123", "db_22121468");
-
-    if ($conn->connect_error) {
-        echo "Database connection error.";
-        exit();
-    }
+    include 'db_connect.php';
 
     $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
     $stmt->bind_param("s", $email);
