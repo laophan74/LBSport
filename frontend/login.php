@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $user = $result->fetch_assoc();
 
-        if (password_verify($password, $user['password'])) {
+        if ($password === $user['password']) {
             $_SESSION['username'] = $user['username'];
             $_SESSION['role'] = $user['role'];
             echo "success";
