@@ -79,8 +79,6 @@ async function addToCart(productId, quantity) {
     body: JSON.stringify({
       product_id: productId,
       quantity: quantity,
-      // You should dynamically get the username from session if backend supports it
-      username: "admin" 
     })
   });
 
