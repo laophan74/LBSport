@@ -12,20 +12,21 @@
 <body>
     <div class="container login-container">
         <div class="row justify-content-center">
-            <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">
-                <div class="card p-4">
+            <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-4">
+                <div class="card p-4 shadow">
                     <h3 class="text-center mb-4">Login</h3>
+
+                    <div id="error-message" class="error-message text-center mb-2"></div>
+
                     <form id="loginForm">
                         <div class="mb-3">
-                            <label for="email" class="form-label">Email address</label>
-                            <input type="email" class="form-control" id="email" placeholder="Enter email">
-                            <div id="emailError" class="error-message"></div>
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" id="email" name="email" class="form-control" required>
                         </div>
 
                         <div class="mb-3">
                             <label for="password" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="password" placeholder="Password">
-                            <div id="loginError" class="error-message"></div>
+                            <input type="password" id="password" name="password" class="form-control" required>
                         </div>
 
                         <button type="submit" class="btn btn-primary w-100">Login</button>
@@ -39,41 +40,26 @@
     <script src="assets/libs/jQuery/jquery-3.7.1.min.js"></script>
 
     <script>
-        $('#loginForm').on('submit', function (e) {
-            e.preventDefault();
-            let email = $('#email').val().trim();
-            let password = $('#password').val().trim();
-            let isValid = true;
+    $('#loginForm').on('submit', function (e) {
+        e.preventDefault();
 
-            $('#emailError').text('');
-            $('#loginError').text('');
+        const email = $('#email').val().trim();
+        const password = $('#password').val().trim();
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailPattern.test(email)) {
-                $('#emailError').text('Please enter a valid email address.');
-                isValid = false;
-            }
+        if (!emailRegex.test(email)) {
+        $('#error-message').text('Please enter a valid email address.');
+        return;
+        }
 
-            if (isValid) {
-                $.ajax({
-                    url: 'login.php',  
-                    type: 'POST',
-                    data: { email: email, password: password },
-                    success: function (response) {
-                        const res = JSON.parse(response);
-                        if (res.success) {
-                            alert('Login successful! Welcome, ' + res.username);
-                            // Redirect or further logic here
-                        } else {
-                            $('#loginError').text(res.message);
-                        }
-                    },
-                    error: function () {
-                        $('#loginError').text('Server error. Please try again later.');
-                    }
-                });
-            }
+        $.post('login.php', { email, password }, function (response) {
+        if (response === 'success') {
+            window.location.href = 'home.html';
+        } else {
+            $('#error-message').text(response);
+        }
         });
-    </script>
+    });
+</script>
 </body>
 </html>

@@ -1,65 +1,40 @@
 <?php
-header('Content-Type: application/json');
+session_start();
 
-// Database config
-$host = "localhost";
-$db = "db_22121468";
-$user = "221215468";
-$pass = "Laobob123";
+// Validate POST
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email = $_POST['email'] ?? '';
+    $password = $_POST['password'] ?? '';
 
-// Connect to database
-$conn = new mysqli($host, $user, $pass, $db);
+    $conn = new mysqli("localhost", "22121468", "Laobob123", "db_22121468");
 
-// Check connection
-if ($conn->connect_error) {
-    echo json_encode([
-        "success" => false,
-        "message" => "Database connection failed: " . $conn->connect_error
-    ]);
-    exit();
-}
+    if ($conn->connect_error) {
+        echo "Database connection error.";
+        exit();
+    }
 
-// Get POST data
-$email = isset($_POST['email']) ? $_POST['email'] : '';
-$password = isset($_POST['password']) ? $_POST['password'] : '';
+    $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-if (empty($email) || empty($password)) {
-    echo json_encode([
-        "success" => false,
-        "message" => "Email and password are required."
-    ]);
-    exit();
-}
+    if ($result->num_rows !== 1) {
+        echo "Email not found.";
+    } else {
+        $user = $result->fetch_assoc();
 
-// Find user by email
-$stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
-$stmt->bind_param("s", $email);
-$stmt->execute();
-$result = $stmt->get_result();
+        if (password_verify($password, $user['password'])) {
+            $_SESSION['username'] = $user['username'];
+            $_SESSION['role'] = $user['role'];
+            echo "success";
+        } else {
+            echo "Incorrect password.";
+        }
+    }
 
-if ($result->num_rows !== 1) {
-    echo json_encode([
-        "success" => false,
-        "message" => "Email not found."
-    ]);
-    exit();
-}
-
-$user = $result->fetch_assoc();
-
-// ✅ password_verify only works if passwords are hashed in DB
-if (password_verify($password, $user['password'])) {
-    echo json_encode([
-        "success" => true,
-        "username" => $user['username'],
-        "role" => $user['role']
-    ]);
+    $stmt->close();
+    $conn->close();
 } else {
-    echo json_encode([
-        "success" => false,
-        "message" => "Incorrect password."
-    ]);
+    echo "Invalid request.";
 }
-
-$conn->close();
 ?>
