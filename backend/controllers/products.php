@@ -2,7 +2,6 @@
 header('Content-Type: application/json');
 require('../includes/connect_db.php');
 
-// Kiểm tra nếu có truy vấn theo ID sản phẩm
 if (isset($_GET['id'])) {
     $id = intval($_GET['id']);
     $query = "SELECT * FROM products WHERE id = $id";
@@ -18,7 +17,6 @@ if (isset($_GET['id'])) {
     exit;
 }
 
-// Nếu không có id, trả về toàn bộ danh sách sản phẩm
 $query = "SELECT * FROM products";
 $result = mysqli_query($dbc, $query);
 
