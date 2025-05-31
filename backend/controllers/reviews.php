@@ -1,6 +1,6 @@
 <?php
 header('Content-Type: application/json');
-require('../includes/connect_db.php');
+require('../includes/db_connect.php');
 
 if (!isset($_GET['product_id'])) {
     echo json_encode(['error' => 'Missing product_id']);
@@ -17,7 +17,7 @@ $query = "
     ORDER BY r.created_at DESC
 ";
 
-$result = mysqli_query($dbc, $query);
+$result = mysqli_query($conn, $query);
 
 $reviews = [];
 while ($row = mysqli_fetch_assoc($result)) {
@@ -25,5 +25,5 @@ while ($row = mysqli_fetch_assoc($result)) {
 }
 
 echo json_encode($reviews);
-mysqli_close($dbc);
+mysqli_close($conn);
 ?>

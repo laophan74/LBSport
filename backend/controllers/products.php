@@ -1,11 +1,11 @@
 <?php
 header('Content-Type: application/json');
-require('../includes/connect_db.php');
+require('../includes/db_connect.php');
 
 if (isset($_GET['id'])) {
     $id = intval($_GET['id']);
     $query = "SELECT * FROM products WHERE id = $id";
-    $result = mysqli_query($dbc, $query);
+    $result = mysqli_query($conn, $query);
 
     if ($row = mysqli_fetch_assoc($result)) {
         echo json_encode($row);
@@ -13,12 +13,12 @@ if (isset($_GET['id'])) {
         echo json_encode(null);
     }
 
-    mysqli_close($dbc);
+    mysqli_close($conn);
     exit;
 }
 
 $query = "SELECT * FROM products";
-$result = mysqli_query($dbc, $query);
+$result = mysqli_query($conn, $query);
 
 $products = [];
 while ($row = mysqli_fetch_assoc($result)) {
@@ -26,5 +26,5 @@ while ($row = mysqli_fetch_assoc($result)) {
 }
 
 echo json_encode($products);
-mysqli_close($dbc);
+mysqli_close($conn);
 ?>

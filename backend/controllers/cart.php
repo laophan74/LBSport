@@ -1,6 +1,6 @@
 <?php
 header('Content-Type: application/json');
-require('../includes/connect_db.php');
+require('../includes/db_connect.php');
 
 $data = json_decode(file_get_contents("php://input"), true);
 $product_id = intval($data['product_id']);
@@ -14,7 +14,7 @@ if (!$product_id || !$quantity || !$username) {
 
 // Get user ID
 $userQuery = "SELECT id FROM users WHERE username = ?";
-$stmt = mysqli_prepare($dbc, $userQuery);
+$stmt = mysqli_prepare($conn, $userQuery);
 mysqli_stmt_bind_param($stmt, "s", $username);
 mysqli_stmt_execute($stmt);
 mysqli_stmt_bind_result($stmt, $user_id);
@@ -33,7 +33,7 @@ $insertQuery = "
     ON DUPLICATE KEY UPDATE quantity = quantity + VALUES(quantity)
 ";
 
-$stmt = mysqli_prepare($dbc, $insertQuery);
+$stmt = mysqli_prepare($conn, $insertQuery);
 mysqli_stmt_bind_param($stmt, "iii", $user_id, $product_id, $quantity);
 $success = mysqli_stmt_execute($stmt);
 mysqli_stmt_close($stmt);
@@ -41,8 +41,8 @@ mysqli_stmt_close($stmt);
 if ($success) {
     echo json_encode(['status' => 'success']);
 } else {
-    echo json_encode(['status' => 'error', 'message' => mysqli_error($dbc)]);
+    echo json_encode(['status' => 'error', 'message' => mysqli_error($conn)]);
 }
 
-mysqli_close($dbc);
+mysqli_close($conn);
 ?>

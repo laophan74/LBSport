@@ -22,3 +22,23 @@ body {
     color: green;
     font-size: 0.9rem;
 }
+
+.message-box {
+    padding: 20px 40px;
+    border: 1px solid #ccc;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    font-size: 1.2rem;
+    color: #333;
+}
+
+.logoutpage {
+        display: flex; 
+        height: 100vh; 
+        justify-content: center; 
+        align-items: center; 
+        font-family: Arial, sans-serif;
+        background-color: #f8f9fa;
+        margin: 0;
+        }

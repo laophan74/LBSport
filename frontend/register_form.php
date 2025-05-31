@@ -68,7 +68,7 @@
                 return;
             }
 
-            $.post('register.php', { username, email, password }, function (response) {
+            $.post('../backend/register.php', { username, email, password }, function (response) {
                 if (response === 'success') {
                     $('#message').text('Registration successful!').removeClass().addClass('success-message');
                     $('#registerForm')[0].reset();
