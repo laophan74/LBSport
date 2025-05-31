@@ -25,9 +25,15 @@
             <li class="nav-item me-3">
                 <a class="nav-link" href="cart_form.php"><i class="fas fa-shopping-cart"></i> Cart</a>
             </li>
-            <li class="nav-item me-2">
+            <li class="nav-item dropdown me-2 position-relative">
             <?php if (isset($_SESSION['userid'])): ?>
-                <a class="nav-link" href="account.php"><i class="fas fa-user"></i> Hello, <?= htmlspecialchars($_SESSION['username']) ?>!</a>
+                <a class="nav-link" href="account.php" id="userDropdown" role="button">
+                    <i class="fas fa-user"></i> Hello, <?= htmlspecialchars($_SESSION['username']) ?>!
+                </a>
+                <ul class="dropdown-menu position-absolute start-0" aria-labelledby="userDropdown" style="top: 100%; display: none;">
+                    <li><a class="dropdown-item" href="order_history.php">Order History</a></li>
+                    <li><a class="dropdown-item" href="logout.php">Logout</a></li>
+                </ul>
             <?php else: ?>
                 <a class="nav-link" href="login_form.php"><i class="fas fa-user"></i> Account</a>
             <?php endif; ?>
