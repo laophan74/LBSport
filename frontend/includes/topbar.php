@@ -23,7 +23,7 @@
                 <a class="nav-link" href="contact_form.php"><i class="fas fa-envelope"></i> Contact</a>
             </li>
             <li class="nav-item me-3">
-                <a class="nav-link" href="cart.php"><i class="fas fa-shopping-cart"></i> Cart</a>
+                <a class="nav-link" href="cart_form.php"><i class="fas fa-shopping-cart"></i> Cart</a>
             </li>
             <li class="nav-item me-2">
             <?php if (isset($_SESSION['username'])): ?>
