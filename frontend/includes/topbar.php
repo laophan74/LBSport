@@ -26,7 +26,7 @@
                 <a class="nav-link" href="cart_form.php"><i class="fas fa-shopping-cart"></i> Cart</a>
             </li>
             <li class="nav-item me-2">
-            <?php if (isset($_SESSION['username'])): ?>
+            <?php if (isset($_SESSION['userid'])): ?>
                 <a class="nav-link" href="account.php"><i class="fas fa-user"></i> Hello, <?= htmlspecialchars($_SESSION['username']) ?>!</a>
             <?php else: ?>
                 <a class="nav-link" href="login_form.php"><i class="fas fa-user"></i> Account</a>

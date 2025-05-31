@@ -2,12 +2,12 @@
 session_start();
 require('../backend/includes/db_connect.php');
 
-if (!isset($_SESSION['user_id'])) {
+if (!isset($_SESSION['userid'])) {
     echo "<p class='text-danger text-center mt-4'>You must be logged in to view your cart.</p>";
     exit;
 }
 
-$user_id = $_SESSION['user_id'];
+$userid = $_SESSION['userid'];
 
 // Fetch cart items with product details
 $query = "
@@ -18,7 +18,7 @@ $query = "
 ";
 
 $stmt = mysqli_prepare($conn, $query);
-mysqli_stmt_bind_param($stmt, "i", $user_id);
+mysqli_stmt_bind_param($stmt, "i", $userid);
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
 
