@@ -1,3 +1,12 @@
+async function loadComponent(id, url) {
+  const res = await fetch(url);
+  const html = await res.text();
+  document.getElementById(id).innerHTML = html;
+}
+
+loadComponent("topbar", "components/topbar.html");
+loadComponent("footer", "components/footer.html");
+
 function getProductIdFromURL() {
   const params = new URLSearchParams(window.location.search);
   return params.get("id");
@@ -56,7 +65,7 @@ async function loadReviews() {
 
     reviews.forEach(review => {
       const item = document.createElement("div");
-      item.className = "review-item mb-3";
+      item.className = "review-item";
       item.innerHTML = `
         <strong>${review.username}</strong>
         <span class="text-muted small">(${new Date(review.created_at).toLocaleDateString()})</span>
@@ -79,8 +88,7 @@ async function addToCart(productId, quantity) {
     body: JSON.stringify({
       product_id: productId,
       quantity: quantity,
-      // You should dynamically get the username from session if backend supports it
-      username: "admin" 
+      username: "admin"
     })
   });
 

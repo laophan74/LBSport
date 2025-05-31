@@ -41,7 +41,7 @@ function renderCategory(containerId, products) {
   for (const row of rows) {
     const rowHTML = row.map(product => `
       <div class="col-md-3 mb-4">
-        <div class="card product-card" onclick="window.location.href='product-detail.html?id=${product.id}'">
+        <div class="card product-card" onclick="window.location.href='product-detail.php?id=${product.id}'">
           <img src="${product.image}" class="card-img-top" alt="${product.name}">
           <div class="card-body">
             <h5 class="card-title fw-bold">${product.name}</h5>
