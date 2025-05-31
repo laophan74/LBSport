@@ -37,6 +37,6 @@ session_start();
     <?php include 'includes/footer.php'; ?>
 
     <script src="assets/libs/bootstrap/bootstrap.bundle.min.js"></script>
-    <script src="assets/js/home copy.js"></script>
+    <script src="assets/js/home.js"></script>
     </body>
 </html>

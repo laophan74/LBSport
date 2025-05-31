@@ -1,12 +1,8 @@
-
 async function loadComponent(id, url) {
   const res = await fetch(url);
   const html = await res.text();
   document.getElementById(id).innerHTML = html;
 }
-
-loadComponent("topbar", "components/topbar.html");
-loadComponent("footer", "components/footer.html");
 
 // split array into chunks
 function chunkArray(array, size) {

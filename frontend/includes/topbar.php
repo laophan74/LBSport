@@ -1,7 +1,7 @@
 <?php session_start(); ?>
 <header class="fixed-top bg-white shadow-sm">
     <nav class="navbar navbar-expand-lg navbar-light container">
-        <a class="navbar-brand fw-bold" href="home copy.php">LBSport</a>
+        <a class="navbar-brand fw-bold" href="home.php">LBSport</a>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
@@ -17,7 +17,13 @@
 
         <ul class="navbar-nav">
             <li class="nav-item me-3">
-            <a class="nav-link" href="cart.php"><i class="fas fa-shopping-cart"></i> Cart</a>
+                <a class="nav-link" href="about.php"><i class="fas fa-info-circle"></i> About</a>
+            </li>
+            <li class="nav-item me-3">
+                <a class="nav-link" href="contact_form.php"><i class="fas fa-envelope"></i> Contact</a>
+            </li>
+            <li class="nav-item me-3">
+                <a class="nav-link" href="cart.php"><i class="fas fa-shopping-cart"></i> Cart</a>
             </li>
             <li class="nav-item me-2">
             <?php if (isset($_SESSION['username'])): ?>

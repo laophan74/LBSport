@@ -64,9 +64,9 @@ session_start();
                 return;
             }
 
-            $.post('../backend/login.php', { email, password }, function (response) {
+            $.post('../backend/controllers/login.php', { email, password }, function (response) {
                 if (response === 'success') {
-                    window.location.href = 'home copy.php';
+                    window.location.href = 'home.php';
                 } else {
                     $('#error-message').text(response);
                 }
