@@ -1,35 +1,46 @@
-<?php
-session_start();
+<?php 
 
-// Validate POST
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = $_POST['email'] ?? '';
-    $password = $_POST['password'] ?? '';
+session_start(); 
 
-    include '../includes/db_connect.php';
+// Validate POST 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') { 
+    $email = $_POST['email'] ?? ''; 
+    $password = $_POST['password'] ?? ''; 
 
-    $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    include '../includes/db_connect.php'; 
 
-    if ($result->num_rows !== 1) {
-        echo "Email not found.";
-    } else {
-        $user = $result->fetch_assoc();
+    $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?"); 
+    $stmt->bind_param("s", $email); 
+    $stmt->execute(); 
+    $result = $stmt->get_result(); 
 
-        if ($password === $user['password']) {
-            $_SESSION['userid'] = $user['id'];
-            $_SESSION['username'] = $user['username'];
-            echo "success";
-        } else {
-            echo "Incorrect password.";
-        }
-    }
+    if ($result->num_rows !== 1) { 
+        echo "Email not found."; 
+    } else { 
+        $user = $result->fetch_assoc(); 
 
-    $stmt->close();
-    $conn->close();
-} else {
-    echo "Invalid request.";
-}
+        // So sánh password (plaintext, như bạn đang dùng)
+        if ($password === $user['password']) { 
+            $_SESSION['userid'] = $user['id']; 
+            $_SESSION['username'] = $user['username']; 
+            $_SESSION['role'] = $user['role']; // Lưu role vào session
+
+            // Điều hướng theo role
+            if ($user['role'] === 'admin') {
+                echo "admin";
+            } else {
+                echo "customer";
+            }
+
+        } else { 
+            echo "Incorrect password."; 
+        } 
+    } 
+
+    $stmt->close(); 
+    $conn->close(); 
+} else { 
+    echo "Invalid request."; 
+} 
+
 ?>
