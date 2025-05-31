@@ -1,3 +1,4 @@
+<?php session_start(); ?>
 <header class="fixed-top bg-white shadow-sm">
     <nav class="navbar navbar-expand-lg navbar-light container">
         <a class="navbar-brand fw-bold" href="home.php">LBSport</a>

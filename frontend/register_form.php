@@ -12,7 +12,7 @@
     </head>
     <body>
 
-    <?php include 'topbar.php'; ?>
+    <?php include 'includes/topbar.php'; ?>
 
     <div class="container register-container mt-5 pt-5">
         <div class="row justify-content-center">
@@ -49,7 +49,7 @@
         </div>
     </div>
 
-    <?php include 'footer.php'; ?>
+    <?php include 'includes/footer.php'; ?>
 
     <script src="assets/libs/bootstrap/bootstrap.bundle.min.js"></script>
     <script src="assets/libs/jQuery/jquery-3.7.1.min.js"></script>

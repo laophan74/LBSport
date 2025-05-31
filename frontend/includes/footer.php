@@ -1,6 +1,6 @@
 <!-- Footer -->
-<footer class="bg-dark text-white py-4 mt-5">
+<footer class="bg-dark text-white py-3 fixed-bottom">
   <div class="container text-center">
-    <p>&copy; 2025 LBSport. All rights reserved.</p>
+    <p class="mb-0">&copy; 2025 LBSport. All rights reserved.</p>
   </div>
 </footer>
