@@ -29,3 +29,6 @@ if ($password === $user['password']) {
 } else {
     echo json_encode(['status' => 'error', 'message' => 'Incorrect password']);
 }
+
+$stmt->close();
+$conn->close();

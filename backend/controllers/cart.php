@@ -35,5 +35,4 @@ if ($success) {
     echo json_encode(['status' => 'error', 'message' => mysqli_error($conn)]);
 }
 
-mysqli_close($conn);
-?>
+$conn->close();
