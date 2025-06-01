@@ -21,6 +21,11 @@ $order_id = intval($_GET['order_id']);
         <main class="container flex-grow-1 py-5 d-flex flex-column justify-content-center align-items-center" style="min-height: 80vh;">
             <h2 class="mb-4">Order Detail</h2>
             <div id="order-detail" class="w-100" style="max-width: 700px;" data-order-id="<?= $order_id ?>">Loading...</div>
+            <div class="w-100 mb-3" style="max-width: 700px;">
+                <a href="order_history.php" class="btn btn-outline-secondary mb-3">
+                <i class="fas fa-arrow-left"></i> Back to Order History
+                </a>
+            </div>
         </main>
 
         <?php include 'includes/footer.php'; ?>
