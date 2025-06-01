@@ -7,7 +7,7 @@ $order_id = intval($_GET['order_id']);
 $user_id = $_SESSION['userid'];
 
 $stmt = $conn->prepare("
-    SELECT p.name, oi.product_id, oi.quantity, oi.price,
+    SELECT p.name, p.image, oi.product_id, oi.quantity, oi.price,
     r.rating, r.comment
     FROM order_items oi
     JOIN products p ON oi.product_id = p.id
@@ -22,6 +22,7 @@ $items = [];
 while ($row = $result->fetch_assoc()) {
     $items[] = [
         'name' => $row['name'],
+        'image' => $row['image'],
         'product_id' => $row['product_id'],
         'quantity' => $row['quantity'],
         'price' => $row['price'],

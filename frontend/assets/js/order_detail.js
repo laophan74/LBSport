@@ -9,16 +9,16 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (data.status === 'success') {
             const itemsHTML = data.items.map(item => {
                 const reviewed = item.review !== null;
+                const yellowStar = '<i class="fas fa-star fa-xs yellow-star"></i>';
                 const reviewSection = reviewed
-                    ? `<div class="mt-2"><strong>Your Review:</strong> ${'⭐'.repeat(item.review.rating)}<br>${item.review.comment}</div>`
+                    ? `<div class="mt-2"><strong>Your Review:</strong> ${yellowStar.repeat(item.review.rating)}<br>${item.review.comment}</div>`
                     : `
                     <form class="review-form" data-product-id="${item.product_id}">
-                        <div class="mb-2">
-                            <label>Rating:</label>
-                            <select name="rating" class="form-select" required>
-                                <option value="">Choose</option>
-                                ${[1,2,3,4,5].map(n => `<option value="${n}">${n} ⭐</option>`).join('')}
-                            </select>
+                        <div class="mb-2 rating-stars" role="radiogroup" aria-label="Rating">
+                            ${[1,2,3,4,5].map(n => `
+                            <input type="radio" id="star${n}-${item.product_id}" name="rating" value="${n}" required />
+                            <label for="star${n}-${item.product_id}" title="${n} stars">${yellowStar.repeat(n)}</label>
+                            `).join('')}
                         </div>
                         <div class="mb-2">
                             <label>Comment:</label>
@@ -29,10 +29,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                 return `
                     <div class="card mb-4 shadow-sm">
-                        <div class="card-body">
-                            <h5>${item.name}</h5>
-                            <p>Price: $${item.price} × ${item.quantity} = $${(item.price * item.quantity).toFixed(2)}</p>
-                            ${reviewSection}
+                        <div class="card-body d-flex">
+                            <img src="${item.image}" alt="${item.name}" style="width: 100px; height: auto; object-fit: contain; margin-right: 15px; border: 1px solid #ccc; border-radius: 4px;" />
+                            <div style="flex: 1;">
+                                <h5>${item.name}</h5>
+                                <p>Price: $${item.price} × ${item.quantity} = $${(item.price * item.quantity).toFixed(2)}</p>
+                                ${reviewSection}
+                            </div>
                         </div>
                     </div>
                 `;
