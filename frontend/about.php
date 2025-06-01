@@ -10,17 +10,9 @@ session_start();
     <link rel="stylesheet" href="assets/libs/bootstrap/bootstrap.min.css" />
     <link rel="stylesheet" href="assets/css/main.css" />
     <link rel="stylesheet" href="assets/libs/fontawesome/css/all.min.css" />
-    <style>
-        /* Simple styling for about page */
-        .about-section {
-        padding: 60px 20px;
-        max-width: 900px;
-        margin: 0 auto;
-        }
-    </style>
     </head>
+    
     <body>
-
     <?php include 'includes/topbar.php'; ?>
 
     <main class="about-section">
@@ -60,6 +52,5 @@ session_start();
 
     <script src="assets/libs/jQuery/jquery-3.7.1.min.js"></script>
     <script src="assets/libs/bootstrap/bootstrap.bundle.min.js"></script>
-
     </body>
 </html>

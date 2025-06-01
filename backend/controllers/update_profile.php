@@ -7,7 +7,7 @@ if (!isset($_SESSION['userid'])) {
     exit;
 }
 
-include '../backend/includes/db_connect.php';
+include '../includes/db_connect.php';
 
 $data = json_decode(file_get_contents("php://input"), true);
 $username = $data['username'] ?? '';
@@ -24,3 +24,6 @@ if ($stmt->affected_rows >= 0) {
 } else {
     echo json_encode(['status' => 'error', 'message' => 'Update failed']);
 }
+
+$stmt->close();
+$conn->close();

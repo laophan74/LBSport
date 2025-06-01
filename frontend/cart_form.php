@@ -9,7 +9,6 @@ if (!isset($_SESSION['userid'])) {
 
 $userid = $_SESSION['userid'];
 
-// Fetch cart items with product details
 $query = "
     SELECT c.product_id, c.quantity, p.name, p.image, p.price
     FROM cart c
