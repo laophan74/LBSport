@@ -1,4 +1,3 @@
--- I've already created tables Bob, don't do that again
 CREATE TABLE users (
   id INT AUTO_INCREMENT PRIMARY KEY,
   username VARCHAR(50) NOT NULL UNIQUE,
@@ -8,7 +7,6 @@ CREATE TABLE users (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-
 CREATE TABLE products (
   id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(100) NOT NULL,
@@ -17,7 +15,6 @@ CREATE TABLE products (
   rating INT DEFAULT 0,
   description TEXT
 );
-
 
 CREATE TABLE cart (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -37,6 +34,37 @@ CREATE TABLE reviews (
   comment TEXT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+ALTER TABLE `reviews`
+  ADD UNIQUE KEY `unique_review` (`product_id`,`user_id`);
+
+CREATE TABLE `orders` (
+  `order_id` int(11) AUTO_INCREMENT NOT NULL PRIMARY KEY,
+  `user_id` int(11) NOT NULL,
+  `order_date` timestamp NOT NULL DEFAULT current_timestamp(),
+  `total_amount` decimal(10,2) NOT NULL,
+  `status` enum('pending','processing','shipped','delivered','cancelled') DEFAULT 'pending'
+)
+
+ALTER TABLE `orders`
+  ADD KEY `user_id` (`user_id`);
+  
+ALTER TABLE `orders`
+  ADD CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+COMMIT;
+
+CREATE TABLE `order_items` (
+  `order_item_id` int(11) AUTO_INCREMENT NOT NULL PRIMARY KEY,
+  `order_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `quantity` int(11) NOT NULL DEFAULT 1,
+  `price` decimal(10,2) NOT NULL
+)
+
+ALTER TABLE `order_items`
+  ADD CONSTRAINT `order_items_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `order_items_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE;
+COMMIT;
 
 
 -- Sample

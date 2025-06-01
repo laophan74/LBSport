@@ -1,3 +1,0 @@
-<?php
-// Reusable functions
-?>
