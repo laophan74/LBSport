@@ -12,7 +12,7 @@ if (!isset($_SESSION['userid'])) {
 $userid = $_SESSION['userid'];
 
 $query = "
-    SELECT c.product_id, c.quantity, p.name, p.image, p.price
+    SELECT c.id AS cart_id, c.product_id, c.quantity, p.name, p.image, p.price
     FROM cart c
     JOIN products p ON c.product_id = p.id
     WHERE c.user_id = ?
