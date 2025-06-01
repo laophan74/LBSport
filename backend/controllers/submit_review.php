@@ -14,23 +14,28 @@ if (!$product_id || !$rating || !$comment || $rating < 1 || $rating > 5) {
     exit;
 }
 
+// Check if a review already exists
 $stmt = $conn->prepare("SELECT id FROM reviews WHERE product_id = ? AND user_id = ?");
 $stmt->bind_param("ii", $product_id, $user_id);
 $stmt->execute();
 $stmt->store_result();
-if ($stmt->num_rows > 0) {
-    echo "You already submitted a review.";
-    exit;
-}
-$stmt->close();
 
-$stmt = $conn->prepare("INSERT INTO reviews (product_id, user_id, rating, comment) VALUES (?, ?, ?, ?)");
-$stmt->bind_param("iiis", $product_id, $user_id, $rating, $comment);
+if ($stmt->num_rows > 0) {
+    // Update review
+    $stmt->close();
+    $stmt = $conn->prepare("UPDATE reviews SET rating = ?, comment = ? WHERE product_id = ? AND user_id = ?");
+    $stmt->bind_param("isii", $rating, $comment, $product_id, $user_id);
+} else {
+    // Insert review
+    $stmt->close();
+    $stmt = $conn->prepare("INSERT INTO reviews (product_id, user_id, rating, comment) VALUES (?, ?, ?, ?)");
+    $stmt->bind_param("iiis", $product_id, $user_id, $rating, $comment);
+}
 
 if ($stmt->execute()) {
     echo "success";
 } else {
-    echo "Error submitting review.";
+    echo "Error saving review.";
 }
 
 $conn->close();
