@@ -1,7 +1,7 @@
 <?php
 session_start();
 header('Content-Type: application/json');
-require('../includes/db_connect.php');
+include('../includes/db_connect.php');
 
 if (!isset($_SESSION['userid'])) {
     echo json_encode(['status' => 'error', 'message' => 'User not logged in']);

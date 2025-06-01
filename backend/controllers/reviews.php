@@ -1,6 +1,6 @@
 <?php
 header('Content-Type: application/json');
-require('../includes/db_connect.php');
+include('../includes/db_connect.php');
 
 if (!isset($_GET['product_id'])) {
     echo json_encode(['error' => 'Missing product_id']);

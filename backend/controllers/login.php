@@ -19,13 +19,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else { 
         $user = $result->fetch_assoc(); 
 
-        // So sánh password (plaintext, như bạn đang dùng)
         if ($password === $user['password']) { 
             $_SESSION['userid'] = $user['id']; 
             $_SESSION['username'] = $user['username']; 
-            $_SESSION['role'] = $user['role']; // Lưu role vào session
+            $_SESSION['role'] = $user['role'];
 
-            // Điều hướng theo role
+            
             if ($user['role'] === 'admin') {
                 echo "admin";
             } else {

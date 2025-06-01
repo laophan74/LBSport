@@ -1,6 +1,6 @@
 <?php
 session_start();
-require('../backend/includes/db_connect.php');
+include('../backend/includes/db_connect.php');
 
 if (!isset($_SESSION['userid'])) {
     echo "<p class='text-danger text-center mt-4'>You must be logged in to view your cart.</p>";
