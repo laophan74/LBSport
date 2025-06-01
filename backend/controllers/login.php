@@ -2,7 +2,10 @@
 
 session_start(); 
 
-// Validate POST 
+header('Content-Type: application/json');
+
+$response = [];
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') { 
     $email = $_POST['email'] ?? ''; 
     $password = $_POST['password'] ?? ''; 
@@ -15,7 +18,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $result = $stmt->get_result(); 
 
     if ($result->num_rows !== 1) { 
-        echo "Email not found."; 
+        $response = [
+            'status' => 'error',
+            'message' => 'Email not found.'
+        ]; 
     } else { 
         $user = $result->fetch_assoc(); 
 
@@ -24,21 +30,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['username'] = $user['username']; 
             $_SESSION['role'] = $user['role'];
 
-            
-            if ($user['role'] === 'admin') {
-                echo "admin";
-            } else {
-                echo "customer";
-            }
-
+            $response = [
+                'status' => 'success',
+                'role' => $user['role']
+            ];
         } else { 
-            echo "Incorrect password."; 
+            $response = [
+                'status' => 'error',
+                'message' => 'Incorrect password.'
+            ];
         } 
     } 
 
     $stmt->close(); 
     $conn->close(); 
 } else { 
-    echo "Invalid request."; 
-} 
+    $response = [
+        'status' => 'error',
+        'message' => 'Invalid request.'
+    ];
+}
+
+echo json_encode($response);
 ?>
