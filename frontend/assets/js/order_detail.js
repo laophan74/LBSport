@@ -18,6 +18,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                             ${yellowStar.repeat(item.review.rating)}<br />
                             <span class="review-comment">${item.review.comment}</span><br />
                             <button class="btn btn-sm btn-outline-secondary edit-btn mt-2" data-product-id="${item.product_id}">Edit Review</button>
+                            <button class="btn btn-sm btn-outline-danger delete-btn mt-2" data-product-id="${item.product_id}">Delete Review</button>
                         </div>
                         <form class="review-form d-none mt-3" data-product-id="${item.product_id}">
                             <div class="mb-2 rating-stars" role="radiogroup" aria-label="Rating">
@@ -111,6 +112,29 @@ document.addEventListener("DOMContentLoaded", async () => {
                     form.classList.add('d-none');
                     if (display) {
                         display.classList.remove('d-none');
+                    }
+                });
+            });
+
+            // Handle delete review
+            document.querySelectorAll('.delete-btn').forEach(button => {
+                button.addEventListener('click', async () => {
+                    if (!confirm('Are you sure you want to delete your review?')) return;
+
+                    const productId = button.dataset.productId;
+
+                    const res = await fetch('../backend/controllers/delete_review.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ product_id: productId })
+                    });
+
+                    const result = await res.json();
+
+                    if (result.status === 'success') {
+                        location.reload();
+                    } else {
+                        alert(result.message || 'Failed to delete review.');
                     }
                 });
             });
