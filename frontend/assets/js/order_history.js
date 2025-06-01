@@ -1,54 +1,31 @@
-$(document).ready(function () {
-    $.get('../backend/controllers/get_order_history.php', function (data) {
-        const container = $('#order-container');
+document.addEventListener("DOMContentLoaded", async () => {
+    const container = document.getElementById('order-container');
 
-        if (!data || data.length === 0) {
-            container.html('<p>You have no orders yet.</p>');
-            return;
-        }
+    try {
+        const res = await fetch('../backend/controllers/get_order_history.php');
+        const data = await res.json();
 
-        let html = '';
-        data.forEach(order => {
-            html += `
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <strong>Order #${order.order_id}</strong>
-                        <span class="text-muted">- ${order.order_date}</span>
-                        <span class="badge bg-info text-dark float-end">${order.status}</span>
-                    </div>
+        if (data.status === 'success') {
+            if (data.orders.length === 0) {
+                container.innerHTML = `<div class="alert alert-info text-center">No orders found.</div>`;
+                return;
+            }
+
+            container.innerHTML = data.orders.map(order => `
+                <div class="card mb-4 shadow-sm">
                     <div class="card-body">
-                        <table class="table table-sm mb-3">
-                            <thead>
-                                <tr>
-                                    <th>Product</th>
-                                    <th>Qty</th>
-                                    <th>Price</th>
-                                    <th>Subtotal</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-            `;
-
-            order.items.forEach(item => {
-                html += `
-                    <tr>
-                        <td>${item.product_name}</td>
-                        <td>${item.quantity}</td>
-                        <td>$${parseFloat(item.price).toFixed(2)}</td>
-                        <td>$${(item.quantity * item.price).toFixed(2)}</td>
-                    </tr>
-                `;
-            });
-
-            html += `
-                            </tbody>
-                        </table>
-                        <h5 class="text-end">Total: $${parseFloat(order.total_amount).toFixed(2)}</h5>
+                        <h5 class="card-title">Order #${order.order_id}</h5>
+                        <p class="card-text">Date: ${order.order_date}</p>
+                        <p class="card-text">Total: $${order.total_amount}</p>
+                        <a href="order_detail.php?order_id=${order.order_id}" class="btn btn-outline-primary">View Details</a>
                     </div>
                 </div>
-            `;
-        });
-
-        container.html(html);
-    }, 'json');
+            `).join('');
+        } else {
+            container.innerHTML = `<div class="alert alert-danger">${data.message}</div>`;
+        }
+    } catch (error) {
+        console.error(error);
+        container.innerHTML = `<div class="alert alert-danger">Failed to load order history.</div>`;
+    }
 });

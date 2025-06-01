@@ -1,16 +1,16 @@
 <?php
 session_start();
-if (!isset($_SESSION['userid'])) {
-    header('Location: login_form.php');
+if (!isset($_SESSION['userid']) || !isset($_GET['order_id'])) {
+    header('Location: order_history.php');
     exit();
 }
+$order_id = intval($_GET['order_id']);
 ?>
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
-        <title>Order History - LBSport</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Order Detail</title>
         <link rel="stylesheet" href="assets/libs/bootstrap/bootstrap.min.css" />
         <link rel="stylesheet" href="assets/css/main.css" />
         <link rel="stylesheet" href="assets/libs/fontawesome/css/all.min.css" />
@@ -19,13 +19,12 @@ if (!isset($_SESSION['userid'])) {
         <?php include 'includes/topbar.php'; ?>
 
         <main class="container flex-grow-1 py-5">
-            <h2 class="mb-4">Order History</h2>
-            <div id="order-container">Loading...</div>
+            <h2 class="mb-4">Order Detail</h2>
+            <div id="order-detail" data-order-id="<?= $order_id ?>">Loading...</div>
         </main>
 
         <?php include 'includes/footer.php'; ?>
-
-        <script src="assets/libs/bootstrap/bootstrap.bundle.min.js"></script>
-        <script src="assets/js/order_history.js"></script>
+        
+        <script src="assets/js/order_detail.js" defer></script>
     </body>
 </html>
