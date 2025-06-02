@@ -1,16 +1,18 @@
 <?php
+// Start session to access user info
 session_start();
 header('Content-Type: application/json');
 
-// Enable error reporting for debugging (remove in production)
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+// Show all errors (for development - remove later)
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
+// error_reporting(E_ALL);
 
 if (!isset($_SESSION['userid'])) {
     echo json_encode(['status' => 'error', 'message' => 'Unauthorized']);
     exit;
 }
+
 
 include '../includes/db_connect.php';
 
@@ -19,13 +21,13 @@ $payment_method = $_POST['payment_method'] ?? '';
 $address = trim($_POST['address'] ?? '');
 $contact = trim($_POST['contact_number'] ?? '');
 
-// Validate required fields
+// Check if all fields are filled
 if (!$payment_method || !$address || !$contact) {
     echo json_encode(['status' => 'error', 'message' => 'All fields are required.']);
     exit;
 }
 
-// Get cart items
+// Get all cart items of the user
 $stmt = $conn->prepare("SELECT c.product_id, c.quantity, p.price 
                         FROM cart c 
                         JOIN products p ON c.product_id = p.id 
@@ -36,18 +38,19 @@ $result = $stmt->get_result();
 $cart_items = $result->fetch_all(MYSQLI_ASSOC);
 $stmt->close();
 
+
 if (empty($cart_items)) {
     echo json_encode(['status' => 'error', 'message' => 'Your cart is empty.']);
     exit;
 }
 
-// Calculate total amount
+// Calculate total price
 $total = 0;
 foreach ($cart_items as $item) {
     $total += $item['quantity'] * $item['price'];
 }
 
-// Insert order
+// Create order entry in database
 $stmt = $conn->prepare("INSERT INTO orders (user_id, total_amount, status) VALUES (?, ?, 'pending')");
 $stmt->bind_param("id", $user_id, $total);
 if (!$stmt->execute()) {
@@ -59,7 +62,7 @@ if (!$stmt->execute()) {
 $order_id = $stmt->insert_id;
 $stmt->close();
 
-// Insert order items and update product stock
+// Add order items and update stock
 $stmt = $conn->prepare("INSERT INTO order_items (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)");
 $stock_stmt = $conn->prepare("UPDATE products SET stock = stock - ? WHERE id = ?");
 
@@ -75,12 +78,11 @@ foreach ($cart_items as $item) {
 $stmt->close();
 $stock_stmt->close();
 
-// Clear cart
+// Clear the user's cart after placing order
 $stmt = $conn->prepare("DELETE FROM cart WHERE user_id = ?");
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $stmt->close();
 
 $conn->close();
-
 echo json_encode(['status' => 'success', 'message' => 'Order placed successfully.']);

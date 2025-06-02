@@ -8,12 +8,13 @@
         </button>
 
         <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-            <form class="d-flex me-3" method="GET" action="search.php">
-                <input class="form-control me-2" type="search" name="q" placeholder="Search products" aria-label="Search" required>
-                <button class="btn btn-outline-primary" type="submit">
-                    <i class="fas fa-search"></i>
-                </button>
-            </form>
+        <div class="me-3 d-flex align-items-center">
+            <a href="search.php" class="btn d-flex align-items-center gap-1 px-3 py-2 border border-2 shadow-sm"
+            style="color: white; border-color: white;">
+                <i class="fas fa-search"></i> <span class="d-none d-sm-inline">Search</span>
+            </a>
+        </div>
+
 
             <ul class="navbar-nav">
                 <li class="nav-item me-3"><a class="nav-link" href="about.php"><i class="fas fa-info-circle"></i> About</a></li>

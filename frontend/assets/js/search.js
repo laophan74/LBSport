@@ -4,23 +4,41 @@ function renderStars(rating) {
   ).join('');
 }
 
+// Get the current value of the search input
 function getSearchQuery() {
-  const params = new URLSearchParams(window.location.search);
-  return params.get("q") || "";
+  const input = document.getElementById("searchQuery");
+  return input ? input.value.trim().toLowerCase() : "";
 }
 
-async function fetchAndRenderResults() {
-  const query = getSearchQuery().toLowerCase();
-  const res = await fetch("../backend/controllers/products.php");
-  const products = await res.json();
+// Read filter values from the UI
+function getFilters() {
+  return {
+    type: document.getElementById("typeFilter").value.trim().toLowerCase(),
+    minPrice: parseFloat(document.getElementById("minPrice").value) || 0,
+    maxPrice: parseFloat(document.getElementById("maxPrice").value) || Infinity
+  };
+}
+
+let allProducts = [];
+
+// Display filtered products
+function renderResults() {
+  const query = getSearchQuery();
+  const { type, minPrice, maxPrice } = getFilters();
   const container = document.getElementById("search-results");
 
-  const matches = products.filter(p =>
-    p.name.toLowerCase().includes(query) ||
-    p.description.toLowerCase().includes(query)
-  );
+  const matches = allProducts.filter(p => {
+    const nameMatch = p.name?.toLowerCase().includes(query);
+    const descMatch = p.description?.toLowerCase().includes(query);
+    const productType = (p.type || "").toLowerCase();
+    const priceMatch = p.price >= minPrice && p.price <= maxPrice;
+    const typeMatch = type === "" || productType === type;
 
-  document.getElementById("result-count").textContent = `${matches.length} result(s) found for "${query}"`;
+    return (nameMatch || descMatch) && priceMatch && typeMatch;
+  });
+
+  document.getElementById("result-count").textContent =
+    `${matches.length} result(s) found for "${query}"`;
 
   if (matches.length === 0) {
     container.innerHTML = "<p>No products found.</p>";
@@ -48,4 +66,30 @@ async function fetchAndRenderResults() {
   `).join('');
 }
 
-document.addEventListener("DOMContentLoaded", fetchAndRenderResults);
+// Fetch product data from backend
+async function fetchAndRenderResults() {
+  const res = await fetch("../backend/controllers/products.php?_=" + new Date().getTime()); // Prevent caching
+  allProducts = await res.json();
+  renderResults();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  fetchAndRenderResults();
+
+  document.getElementById("applyFilters").addEventListener("click", renderResults);
+
+  // Clear all filters
+  document.getElementById("clearFilters").addEventListener("click", () => {
+    document.getElementById("searchQuery").value = "";
+    document.getElementById("typeFilter").value = "";
+    document.getElementById("minPrice").value = "";
+    document.getElementById("maxPrice").value = "";
+    renderResults();
+  });
+
+  const params = new URLSearchParams(window.location.search);
+  const q = params.get("q");
+  if (q) {
+    document.getElementById("searchQuery").value = q;
+  }
+});

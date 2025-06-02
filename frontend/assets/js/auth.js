@@ -4,7 +4,8 @@ $('#loginForm').on('submit', function (e) {
 
     const email = $('#email').val().trim();
     const password = $('#password').val().trim();
-    const emailRegex = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 
     // Check if email format is valid
     if (!emailRegex.test(email)) {

@@ -1,10 +1,11 @@
+// Utility: Load an external component
 async function loadComponent(id, url) {
   const res = await fetch(url);
   const html = await res.text();
   document.getElementById(id).innerHTML = html;
 }
 
-// split array into chunks
+// Split array into smaller chunks (for layout)
 function chunkArray(array, size) {
   const result = [];
   for (let i = 0; i < array.length; i += size) {
@@ -13,27 +14,29 @@ function chunkArray(array, size) {
   return result;
 }
 
+// Render star rating visually
 function renderStars(rating) {
   return Array.from({ length: 5 }, (_, i) =>
     `<span class="text-warning">${i < rating ? "★" : "☆"}</span>`
   ).join('');
 }
 
-// Load and display products
+// Load products and group by type
 async function loadProducts() {
   const res = await fetch("../backend/controllers/products.php");
   const products = await res.json();
 
-  const football = products.filter(p => p.name.toLowerCase().includes("shoe") || p.name.toLowerCase().includes("boot"));
-  const tennis = products.filter(p => p.name.toLowerCase().includes("tennis"));
-  const badminton = products.filter(p => p.name.toLowerCase().includes("badminton") || p.name.toLowerCase().includes("feather"));
+  // Group using type column from DB
+  const football = products.filter(p => p.type === 'football');
+  const tennis = products.filter(p => p.type === 'tennis');
+  const badminton = products.filter(p => p.type === 'badminton');
 
   renderCategory("football-products", football);
   renderCategory("tennis-products", tennis);
   renderCategory("badminton-products", badminton);
 }
 
-// Render a product category into HTML
+// Display a category of products in the container
 function renderCategory(containerId, products) {
   const container = document.getElementById(containerId);
   const rows = chunkArray(products.slice(0, 4), 4);
@@ -56,4 +59,5 @@ function renderCategory(containerId, products) {
   }
 }
 
+// Run on page load
 loadProducts();
