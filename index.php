@@ -1,3 +1,3 @@
 <?php
-header('Location: frontend/index.html');
+header('Location: frontend/login_form.php');
 exit();
