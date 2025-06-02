@@ -111,7 +111,7 @@ function fetchOrders() {
                 <td>${o.order_id}</td>
                 <td>${o.user_id}</td>
                 <td>${o.order_date}</td>
-                <td>${o.total_amount}</td>
+                <td>$${parseFloat(o.total_amount).toFixed(2)}</td>
                 <td>${o.status}</td>
                 <td>
                     <button class="btn btn-sm btn-warning" onclick="editOrder(${o.order_id})">Edit</button>
@@ -128,21 +128,39 @@ function showOrderForm() {
     $('#order-form').show();
     $('#order-table-container').hide();
     $('#order-id').val('');
-    $('#order-user-id, #order-total').val('');
+    $('#order-user-id').val('');
+    $('#order-total').val('');
     $('#order-status').val('pending');
 }
 
 function editOrder(id) {
-    $.getJSON(`../backend/controllers/orders.php?id=${id}`, function (data) {
+    $.getJSON(`../backend/controllers/orders.php`, function (response) {
+        let order;
+
+        // Case 1: Admin response (array directly)
+        if (Array.isArray(response)) {
+            order = response.find(o => o.order_id == id);
+        }
+        // Case 2: Normal user response { status: 'success', orders: [...] }
+        else if (response.status === 'success' && Array.isArray(response.orders)) {
+            order = response.orders.find(o => o.order_id == id);
+        }
+
+        if (!order) {
+            alert('Order not found.');
+            return;
+        }
+
         $('#order-form-title').text('Edit Order');
         $('#order-form').show();
         $('#order-table-container').hide();
-        $('#order-id').val(data.order_id);
-        $('#order-user-id').val(data.user_id);
-        $('#order-total').val(data.total_amount);
-        $('#order-status').val(data.status);
+        $('#order-id').val(order.order_id);
+        $('#order-user-id').val(order.user_id);
+        $('#order-total').val(order.total_amount);
+        $('#order-status').val(order.status);
     });
 }
+
 
 function submitOrderForm(e) {
     e.preventDefault();
@@ -174,7 +192,8 @@ function deleteOrder(id) {
     $.ajax({
         url: "../backend/controllers/orders.php",
         type: "DELETE",
-        data: { order_id: id },
+        contentType: "application/json",
+        data: JSON.stringify({ order_id: id }),
         success: function () {
             fetchOrders();
         }

@@ -114,6 +114,7 @@ CREATE TABLE `products` (
   `image` varchar(255) DEFAULT NULL,
   `price` decimal(10,2) NOT NULL,
   `rating` int(11) DEFAULT 0,
+  `stock` int(11) DEFAULT 0,
   `description` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
