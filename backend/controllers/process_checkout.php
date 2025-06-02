@@ -1,17 +1,13 @@
 <?php
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
-header('Content-Type: application/json');
-include '../includes/db_connect.php';
 session_start();
-
+header('Content-Type: application/json');
 
 if (!isset($_SESSION['userid'])) {
     echo json_encode(['status' => 'error', 'message' => 'Unauthorized']);
     exit;
 }
 
-
+include '../includes/db_connect.php';
 
 $user_id = $_SESSION['userid'];
 $payment_method = $_POST['payment_method'] ?? '';
