@@ -50,9 +50,6 @@ $username = $_SESSION['username'];
 
                 <div id="msg" class="mt-3 text-center"></div>
 
-                <div class="text-center mt-4">
-                    <a href="logout.php" class="btn btn-danger">Logout</a>
-                </div>
             </div>
         </div>
     </main>
