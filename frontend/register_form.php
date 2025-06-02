@@ -20,7 +20,8 @@
                     <div class="card p-4 shadow">
                         <h3 class="text-center mb-4">Register</h3>
 
-                        <div id="message" class="text-center mb-2"></div>
+                        <div id="message" class="alert d-none text-center mb-3" role="alert"></div>
+
 
                         <form id="registerForm">
                             <div class="mb-3">
@@ -53,6 +54,6 @@
 
         <script src="assets/libs/jQuery/jquery-3.7.1.min.js"></script>
         <script src="assets/libs/bootstrap/bootstrap.bundle.min.js"></script>
-        <script src="assets/js/register.js"></script>
+        <script src="assets/js/auth.js"></script>
     </body>
 </html>

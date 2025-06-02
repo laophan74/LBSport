@@ -52,6 +52,6 @@ session_start();
 
     <script src="assets/libs/jQuery/jquery-3.7.1.min.js"></script> 
     <script src="assets/libs/bootstrap/bootstrap.bundle.min.js"></script> 
-    <script src="assets/js/login.js"></script>
+    <script src="assets/js/auth.js"></script>
 </body> 
 </html>
