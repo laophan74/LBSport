@@ -24,6 +24,7 @@ function fetchProducts() {
                 <td>${p.name}</td>
                 <td><img src="${p.image}" width="50"></td>
                 <td>${p.price}</td>
+                <td>${p.type ?? ''}</td>
                 <td>${p.description}</td>
                 <td>${p.stock}</td>
                 <td>
@@ -42,6 +43,7 @@ function showAddForm() {
     $('#product-table-container').hide();
     $('#product-id').val('');
     $('#name, #image, #price, #description, #stock').val('');
+    $('#type').val('');
 }
 
 function editProduct(id) {
@@ -53,6 +55,7 @@ function editProduct(id) {
         $('#name').val(data.name);
         $('#image').val(data.image);
         $('#price').val(data.price);
+        $('#type').val(data.type);
         $('#description').val(data.description);
         $('#stock').val(data.stock);
     });
@@ -65,6 +68,7 @@ function submitForm(e) {
         name: $('#name').val(),
         image: $('#image').val(),
         price: $('#price').val(),
+        type: $('#type').val(),
         description: $('#description').val(),
         stock: $('#stock').val()
     };
@@ -137,12 +141,9 @@ function editOrder(id) {
     $.getJSON(`../backend/controllers/orders.php`, function (response) {
         let order;
 
-        // Case 1: Admin response (array directly)
         if (Array.isArray(response)) {
             order = response.find(o => o.order_id == id);
-        }
-        // Case 2: Normal user response { status: 'success', orders: [...] }
-        else if (response.status === 'success' && Array.isArray(response.orders)) {
+        } else if (response.status === 'success' && Array.isArray(response.orders)) {
             order = response.orders.find(o => o.order_id == id);
         }
 
@@ -160,7 +161,6 @@ function editOrder(id) {
         $('#order-status').val(order.status);
     });
 }
-
 
 function submitOrderForm(e) {
     e.preventDefault();

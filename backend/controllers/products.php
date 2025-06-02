@@ -38,8 +38,8 @@ if ($method === 'GET') {
 if ($method === 'POST') {
     $data = json_decode(file_get_contents("php://input"), true);
 
-    $stmt = $conn->prepare("INSERT INTO products (name, image, price, rating, description, stock) VALUES (?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("ssdisi", $data['name'], $data['image'], $data['price'], $data['rating'], $data['description'], $data['stock']);
+    $stmt = $conn->prepare("INSERT INTO products (name, image, price, type, rating, description, stock) VALUES (?, ?, ?, ?, NULL, ?, ?)");
+    $stmt->bind_param("ssdssi", $data['name'], $data['image'], $data['price'], $data['type'], $data['description'], $data['stock']);
     $stmt->execute();
 
     echo json_encode(["id" => $stmt->insert_id]);
@@ -51,8 +51,8 @@ if ($method === 'POST') {
 if ($method === 'PUT') {
     parse_str(file_get_contents("php://input"), $data);
 
-    $stmt = $conn->prepare("UPDATE products SET name=?, image=?, price=?, rating=?, description=?, stock=? WHERE id=?");
-    $stmt->bind_param("ssdisii", $data['name'], $data['image'], $data['price'], $data['rating'], $data['description'], $data['stock'], $data['id']);
+    $stmt = $conn->prepare("UPDATE products SET name=?, image=?, price=?, type=?, description=?, stock=? WHERE id=?");
+    $stmt->bind_param("ssdssii", $data['name'], $data['image'], $data['price'], $data['type'], $data['description'], $data['stock'], $data['id']);
     $stmt->execute();
 
     echo json_encode(["success" => true]);

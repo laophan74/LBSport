@@ -33,7 +33,7 @@
             <div id="product-table-container" class="table-responsive">
                 <table class="table table-bordered table-striped" id="product-table">
                     <thead>
-                        <tr><th>ID</th><th>Name</th><th>Image</th><th>Price</th><th>Description</th><th>Stock</th><th>Actions</th></tr>
+                        <tr><th>ID</th><th>Name</th><th>Image</th><th>Price</th><th>Type</th><th>Description</th><th>Stock</th><th>Actions</th></tr>
                     </thead>
                     <tbody></tbody>
                 </table>
@@ -45,6 +45,14 @@
                     <div class="mb-2"><input type="text" class="form-control" id="name" placeholder="Product Name" required></div>
                     <div class="mb-2"><input type="text" class="form-control" id="image" placeholder="Image Path" required></div>
                     <div class="mb-2"><input type="number" class="form-control" id="price" step="0.01" placeholder="Price" required></div>
+                    <div class="mb-2">
+                        <select class="form-control" id="type" required>
+                            <option value="">Select Type</option>
+                            <option value="football">Football</option>
+                            <option value="tennis">Tennis</option>
+                            <option value="badminton">Badminton</option>
+                        </select>
+                    </div>
                     <div class="mb-2"><textarea class="form-control" id="description" placeholder="Description"></textarea></div>
                     <div class="mb-2"><input type="number" class="form-control" id="stock" placeholder="Stock Quantity" required></div>
                     <button type="submit" class="btn btn-primary">Save</button>
