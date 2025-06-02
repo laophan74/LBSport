@@ -93,3 +93,19 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("searchQuery").value = q;
   }
 });
+
+// copied from product-detail.js
+function addToCart(productId, quantity) {
+  $.ajax({
+    url: '../backend/controllers/cart.php',
+    method: 'POST',
+    contentType: 'application/json',
+    data: JSON.stringify({ product_id: productId, quantity }),
+    success: function (res) {
+      alert(res.status === 'success' ? 'Added to cart!' : res.message);
+    },
+    error: function () {
+      alert('Error adding to cart.');
+    }
+  });
+}
