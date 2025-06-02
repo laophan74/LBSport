@@ -1,144 +1,100 @@
-document.addEventListener('DOMContentLoaded', loadCart);
+$(document).ready(function () {
+    loadCart();
 
-async function loadCart() {
-    const container = document.getElementById('cart-container');
+    function loadCart() {
+        $.getJSON('../backend/controllers/cart.php', function (res) {
+            if (res.status === 'success') {
+                if (res.items.length === 0) {
+                    $('#cart-container').html(`<div class="alert alert-info">Your cart is empty.</div>`);
+                    return;
+                }
 
-    try {
-        const res = await fetch('../backend/controllers/get_cart_items.php');
-        const data = await res.json();
+                let rows = res.items.map(item => `
+                    <tr data-id="${item.cart_id}">
+                        <td>${item.name}</td>
+                        <td><img src="${item.image}" alt="${item.name}" width="60"></td>
+                        <td>$${item.price.toFixed(2)}</td>
+                        <td>
+                            <input type="number" class="form-control qty" value="${item.quantity}" min="1" style="width: 80px; display:inline-block;">
+                            <button class="btn btn-sm btn-primary update">Update</button>
+                        </td>
+                        <td>$${(item.price * item.quantity).toFixed(2)}</td>
+                        <td><button class="btn btn-sm btn-danger remove"><i class="fas fa-trash-alt"></i></button></td>
+                    </tr>
+                `).join('');
 
-        if (data.status === 'success') {
-            if (data.items.length === 0) {
-                container.innerHTML = `<div class="alert alert-info text-center">Your cart is empty.</div>`;
-                return;
-            }
+                rows += `
+                    <tr class="table-secondary">
+                        <td colspan="4" class="text-end fw-bold">Total</td>
+                        <td class="fw-bold">$${res.total.toFixed(2)}</td>
+                        <td></td>
+                    </tr>
+                `;
 
-            let rows = data.items.map(item => `
-                <tr data-product-id="${item.product_id}">
-                    <td>${escapeHtml(item.name)}</td>
-                    <td><img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}" width="60"></td>
-                    <td>$${Number(item.price).toFixed(2)}</td>
-                    <td>
-                        <input type="number" class="form-control quantity-input" min="1" value="${item.quantity}" data-cart-id="${item.cart_id}" style="width: 80px; display: inline-block;">
-                        <button class="btn btn-sm btn-primary update-btn ms-2">Update</button>
-                    </td>
-                    <td>$${(item.price * item.quantity).toFixed(2)}</td>
-                    <td>
-                        <button class="btn btn-sm btn-danger remove-btn" data-cart-id="${item.cart_id}"><i class="fas fa-trash-alt"></i></button>
-                    </td>
-                </tr>
-            `).join('');
-
-            rows += `
-                <tr class="table-secondary">
-                    <td colspan="4" class="text-end fw-bold">Total</td>
-                    <td class="fw-bold">$${data.total.toFixed(2)}</td>
-                    <td></td>
-                </tr>
-            `;
-
-            container.innerHTML = `
-                <div class="table-responsive">
-                    <table class="table table-bordered text-center align-middle">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Product</th>
-                                <th>Image</th>
-                                <th>Price</th>
-                                <th>Quantity</th>
-                                <th>Subtotal</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>${rows}</tbody>
-                    </table>
-                </div>
-
-                <div class="text-end mt-3">
-                    <button id="checkout-btn" class="btn btn-success">Proceed to Checkout</button>
-                </div>
-            `;
-
-            attachEventListeners();
-            attachCheckoutListener(data.items.length);
-
-        } else {
-            container.innerHTML = `<div class="alert alert-danger text-center">${data.message}</div>`;
-        }
-    } catch (error) {
-        console.error(error);
-        container.innerHTML = `<div class="alert alert-danger text-center">Error loading cart.</div>`;
-    }
-}
-
-function attachEventListeners() {
-    document.querySelectorAll('.update-btn').forEach(btn => {
-        btn.addEventListener('click', async (e) => {
-            const row = e.target.closest('tr');
-            const cartId = row.querySelector('.quantity-input').dataset.cartId;
-            const quantity = row.querySelector('.quantity-input').value;
-
-            const res = await fetch('../backend/controllers/update_cart_item.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: cartId, quantity: quantity })
-            });
-
-            const data = await res.json();
-            if (data.status === 'success') {
-                loadCart();
+                $('#cart-container').html(`
+                    <div class="table-responsive">
+                        <table class="table table-bordered text-center align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Image</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th>Subtotal</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>${rows}</tbody>
+                        </table>
+                    </div>
+                    <div class="text-end mt-3">
+                        <button class="btn btn-success" id="checkout-btn">Proceed to Checkout</button>
+                    </div>
+                `);
             } else {
-                alert(data.message);
+                $('#cart-container').html(`<div class="alert alert-danger">${res.message}</div>`);
             }
-        });
-    });
-
-    document.querySelectorAll('.remove-btn').forEach(btn => {
-        btn.addEventListener('click', async (e) => {
-            const row = e.target.closest('tr');
-            const cartId = row.querySelector('.remove-btn').dataset.cartId;
-
-            if (!confirm('Remove this item from cart?')) return;
-
-            const res = await fetch('../backend/controllers/remove_cart_item.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: cartId })
-            });
-
-            const data = await res.json();
-            if (data.status === 'success') {
-                loadCart();
-            } else {
-                alert(data.message);
-            }
-        });
-    });
-}
-
-function escapeHtml(text) {
-    return text.replace(/[&<>"']/g, (char) => {
-        const map = {
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-            '"': '&quot;',
-            "'": '&#039;',
-        };
-        return map[char];
-    });
-}
-
-function attachCheckoutListener(cartItemCount) {
-    const checkoutBtn = document.getElementById('checkout-btn');
-
-    if (cartItemCount === 0) {
-        checkoutBtn.disabled = true;
-        checkoutBtn.classList.add('btn-secondary');
-        checkoutBtn.classList.remove('btn-success');
-    } else {
-        checkoutBtn.addEventListener('click', () => {
-            window.location.href = 'checkout.php';
         });
     }
-}
+
+    // Update quantity
+    $('#cart-container').on('click', '.update', function () {
+        const row = $(this).closest('tr');
+        const id = row.data('id');
+        const quantity = row.find('.qty').val();
+
+        $.ajax({
+            url: '../backend/controllers/cart.php',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ action: 'update', id, quantity }),
+            success: function (res) {
+                if (res.status === 'success') loadCart();
+                else alert(res.message);
+            }
+        });
+    });
+
+    // Remove item
+    $('#cart-container').on('click', '.remove', function () {
+        if (!confirm('Remove this item?')) return;
+
+        const id = $(this).closest('tr').data('id');
+
+        $.ajax({
+            url: '../backend/controllers/cart.php',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ action: 'remove', id }),
+            success: function (res) {
+                if (res.status === 'success') loadCart();
+                else alert(res.message);
+            }
+        });
+    });
+
+    // Checkout
+    $('#cart-container').on('click', '#checkout-btn', function () {
+        window.location.href = 'checkout.php';
+    });
+});

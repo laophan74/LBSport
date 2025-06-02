@@ -8,31 +8,63 @@ if (!isset($_SESSION['userid'])) {
     exit;
 }
 
-$data = json_decode(file_get_contents("php://input"), true);
-$product_id = intval($data['product_id'] ?? 0);
-$quantity = intval($data['quantity'] ?? 0);
 $userid = $_SESSION['userid'];
 
-if (!$product_id || !$quantity) {
-    echo json_encode(['status' => 'error', 'message' => 'Missing product or quantity']);
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    $stmt = $conn->prepare("
+        SELECT c.id AS cart_id, c.product_id, c.quantity, p.name, p.image, p.price
+        FROM cart c
+        JOIN products p ON c.product_id = p.id
+        WHERE c.user_id = ?
+    ");
+    $stmt->bind_param("i", $userid);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $items = [];
+    $total = 0;
+
+    while ($row = $result->fetch_assoc()) {
+        $row['price'] = floatval($row['price']);
+        $row['quantity'] = intval($row['quantity']);
+        $items[] = $row;
+        $total += $row['price'] * $row['quantity'];
+    }
+
+    echo json_encode(['status' => 'success', 'items' => $items, 'total' => $total]);
     exit;
 }
 
-$query = "
-    INSERT INTO cart (user_id, product_id, quantity)
-    VALUES (?, ?, ?)
-    ON DUPLICATE KEY UPDATE quantity = quantity + VALUES(quantity)
-";
+$data = json_decode(file_get_contents("php://input"), true);
+$action = $data['action'] ?? '';
+$id = intval($data['id'] ?? 0);
 
-$stmt = mysqli_prepare($conn, $query);
-mysqli_stmt_bind_param($stmt, "iii", $userid, $product_id, $quantity);
-$success = mysqli_stmt_execute($stmt);
-mysqli_stmt_close($stmt);
+if ($action === 'remove') {
+    $stmt = $conn->prepare("DELETE FROM cart WHERE id = ? AND user_id = ?");
+    $stmt->bind_param("ii", $id, $userid);
+    $stmt->execute();
 
-if ($success) {
-    echo json_encode(['status' => 'success']);
-} else {
-    echo json_encode(['status' => 'error', 'message' => mysqli_error($conn)]);
+    if ($stmt->affected_rows > 0) {
+        echo json_encode(['status' => 'success']);
+    } else {
+        echo json_encode(['status' => 'error', 'message' => 'Item not found or already removed']);
+    }
+    exit;
 }
 
-$conn->close();
+if ($action === 'update') {
+    $quantity = max(1, intval($data['quantity'] ?? 1));
+
+    $stmt = $conn->prepare("UPDATE cart SET quantity = ? WHERE id = ? AND user_id = ?");
+    $stmt->bind_param("iii", $quantity, $id, $userid);
+    $stmt->execute();
+
+    if ($stmt->affected_rows > 0) {
+        echo json_encode(['status' => 'success']);
+    } else {
+        echo json_encode(['status' => 'error', 'message' => 'Update failed or no changes']);
+    }
+    exit;
+}
+
+echo json_encode(['status' => 'error', 'message' => 'Invalid request']);
