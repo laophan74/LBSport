@@ -53,9 +53,15 @@ async function loadCart() {
                         <tbody>${rows}</tbody>
                     </table>
                 </div>
+
+                <div class="text-end mt-3">
+                    <button id="checkout-btn" class="btn btn-success">Proceed to Checkout</button>
+                </div>
             `;
 
             attachEventListeners();
+            attachCheckoutListener(data.items.length);
+
         } else {
             container.innerHTML = `<div class="alert alert-danger text-center">${data.message}</div>`;
         }
@@ -121,4 +127,18 @@ function escapeHtml(text) {
         };
         return map[char];
     });
+}
+
+function attachCheckoutListener(cartItemCount) {
+    const checkoutBtn = document.getElementById('checkout-btn');
+
+    if (cartItemCount === 0) {
+        checkoutBtn.disabled = true;
+        checkoutBtn.classList.add('btn-secondary');
+        checkoutBtn.classList.remove('btn-success');
+    } else {
+        checkoutBtn.addEventListener('click', () => {
+            window.location.href = 'checkout.php';
+        });
+    }
 }

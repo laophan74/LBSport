@@ -30,6 +30,6 @@ if (!isset($_SESSION['userid'])) {
         
         <script src="assets/libs/jQuery/jquery-3.7.1.min.js"></script> 
         <script src="assets/libs/bootstrap/bootstrap.bundle.min.js"></script> 
-        <script src="assets/js/cart.js" type="module"></script>
+        <script src="assets/js/cart.js"></script>
     </body>
 </html>

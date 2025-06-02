@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         <p class="card-text">Total: $${order.total_amount}</p>
                         <p class="card-text"><strong>Status:</strong> ${order.status}</p>
                         <a href="order_detail.php?order_id=${order.order_id}" class="btn btn-outline-primary me-2">View Details</a>
-                        ${order.status === 'processing' ? `<button class="btn btn-outline-danger cancel-btn" data-id="${order.order_id}">Cancel Order</button>` : ''}
+                        ${(order.status === 'processing' || order.status === 'pending') ? `<button class="btn btn-outline-danger cancel-btn" data-id="${order.order_id}">Cancel Order</button>` : ''}
                     </div>
                 </div>
             `).join('');
