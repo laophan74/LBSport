@@ -2,6 +2,11 @@
 session_start();
 header('Content-Type: application/json');
 
+// Enable error reporting for debugging (remove in production)
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 if (!isset($_SESSION['userid'])) {
     echo json_encode(['status' => 'error', 'message' => 'Unauthorized']);
     exit;
@@ -14,19 +19,17 @@ $payment_method = $_POST['payment_method'] ?? '';
 $address = trim($_POST['address'] ?? '');
 $contact = trim($_POST['contact_number'] ?? '');
 
-// Validate inputs
+// Validate required fields
 if (!$payment_method || !$address || !$contact) {
     echo json_encode(['status' => 'error', 'message' => 'All fields are required.']);
     exit;
 }
 
 // Get cart items
-$stmt = $conn->prepare("
-    SELECT c.product_id, c.quantity, p.price 
-    FROM cart c 
-    JOIN products p ON c.product_id = p.id 
-    WHERE c.user_id = ?
-");
+$stmt = $conn->prepare("SELECT c.product_id, c.quantity, p.price 
+                        FROM cart c 
+                        JOIN products p ON c.product_id = p.id 
+                        WHERE c.user_id = ?");
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -38,7 +41,7 @@ if (empty($cart_items)) {
     exit;
 }
 
-// Calculate total
+// Calculate total amount
 $total = 0;
 foreach ($cart_items as $item) {
     $total += $item['quantity'] * $item['price'];
@@ -49,12 +52,14 @@ $stmt = $conn->prepare("INSERT INTO orders (user_id, total_amount, status) VALUE
 $stmt->bind_param("id", $user_id, $total);
 if (!$stmt->execute()) {
     echo json_encode(['status' => 'error', 'message' => 'Failed to place order.']);
+    $stmt->close();
+    $conn->close();
     exit;
 }
 $order_id = $stmt->insert_id;
 $stmt->close();
 
-// Insert order items and update stock
+// Insert order items and update product stock
 $stmt = $conn->prepare("INSERT INTO order_items (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)");
 $stock_stmt = $conn->prepare("UPDATE products SET stock = stock - ? WHERE id = ?");
 
@@ -67,7 +72,6 @@ foreach ($cart_items as $item) {
         error_log("Stock update failed for product_id {$item['product_id']}: " . $stock_stmt->error);
     }
 }
-
 $stmt->close();
 $stock_stmt->close();
 

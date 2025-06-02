@@ -38,7 +38,7 @@ $(document).ready(function () {
         if (!confirm('Are you sure you want to confirm this order?')) return;
 
         $.ajax({
-            url: '../backend/controllers/process_checkout.php',
+            url: '../backend/controllers/checkout.php',
             type: 'POST',
             data: $(this).serialize(),
             success: function (res) {
