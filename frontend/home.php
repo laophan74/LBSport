@@ -1,5 +1,4 @@
 <?php
-// Start session if you want to access session variables here or in topbar.php
 session_start();
 ?>
 

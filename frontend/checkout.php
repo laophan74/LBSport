@@ -77,7 +77,15 @@ if (!isset($_SESSION['userid'])) {
                 <input type="text" name="contact_number" class="form-control" required>
             </div>
 
-            <button type="submit" class="btn btn-success">Confirm Order</button>
+            <div class="w-100 mb-3">
+                <div class="d-flex justify-content-between">
+                    <a href="cart_form.php" class="btn btn-outline-secondary mb-3">
+                        <i class="fas fa-arrow-left"></i> Back to Cart
+                    </a>
+
+                    <button type="submit" class="btn btn-success mb-3">Confirm Order</button>
+                </div>
+            </div>
         </form>
 
         <div id="message" class="mt-4"></div>
