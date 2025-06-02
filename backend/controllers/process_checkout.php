@@ -66,7 +66,6 @@ $stmt = $conn->prepare("DELETE FROM cart WHERE user_id = ?");
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $stmt->close();
-
 $conn->close();
 
 echo json_encode(['status' => 'success', 'message' => 'Order placed successfully.']);
