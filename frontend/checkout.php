@@ -1,11 +1,10 @@
 <?php
 session_start();
 if (!isset($_SESSION['userid'])) {
-    header('Location: login.php');
+    header('Location: login_form.php');
     exit;
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,7 +12,7 @@ if (!isset($_SESSION['userid'])) {
     <title>Checkout</title>
     <link rel="stylesheet" href="assets/libs/bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/main.css">
-        <link rel="stylesheet" href="assets/libs/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="assets/libs/fontawesome/css/all.min.css">
     <style>
         .payment-form { display: none; }
     </style>
@@ -23,10 +22,7 @@ if (!isset($_SESSION['userid'])) {
 
     <main class="container flex-grow-1 py-5">
         <h2 class="mb-4">Checkout</h2>
-        
-        <div id="cart-summary" class="mb-4">
-            <p>Loading your cart...</p>
-        </div>
+        <div id="cart-summary" class="mb-4">Loading your cart...</div>
 
         <form id="checkout-form">
             <div class="mb-3">
@@ -39,31 +35,28 @@ if (!isset($_SESSION['userid'])) {
                 </select>
             </div>
 
-            <!-- Credit Card Form -->
             <div class="payment-form" id="form-credit_card">
                 <div class="mb-3">
                     <label class="form-label">Card Number</label>
-                    <input type="text" class="form-control" name="card_number" required>
+                    <input type="text" name="card_number" class="form-control" required>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Expiry</label>
-                    <input type="text" class="form-control" name="card_expiry" placeholder="MM/YY" required>
+                    <input type="text" name="card_expiry" class="form-control" placeholder="MM/YY" required>
                 </div>
             </div>
 
-            <!-- PayPal Form -->
             <div class="payment-form" id="form-paypal">
                 <div class="mb-3">
                     <label class="form-label">PayPal Email</label>
-                    <input type="email" class="form-control" name="paypal_email" required>
+                    <input type="email" name="paypal_email" class="form-control" required>
                 </div>
             </div>
 
-            <!-- Bank Transfer Form -->
             <div class="payment-form" id="form-bank_transfer">
                 <div class="mb-3">
                     <label class="form-label">Bank Account Number</label>
-                    <input type="text" class="form-control" name="bank_account" required>
+                    <input type="text" name="bank_account" class="form-control" required>
                 </div>
             </div>
 
@@ -77,14 +70,9 @@ if (!isset($_SESSION['userid'])) {
                 <input type="text" name="contact_number" class="form-control" required>
             </div>
 
-            <div class="w-100 mb-3">
-                <div class="d-flex justify-content-between">
-                    <a href="cart_form.php" class="btn btn-outline-secondary mb-3">
-                        <i class="fas fa-arrow-left"></i> Back to Cart
-                    </a>
-
-                    <button type="submit" class="btn btn-success mb-3">Confirm Order</button>
-                </div>
+            <div class="d-flex justify-content-between">
+                <a href="cart_form.php" class="btn btn-outline-secondary"><i class="fas fa-arrow-left"></i> Back to Cart</a>
+                <button type="submit" class="btn btn-success">Confirm Order</button>
             </div>
         </form>
 
@@ -93,6 +81,7 @@ if (!isset($_SESSION['userid'])) {
 
     <?php include 'includes/footer.php'; ?>
 
+    <script src="assets/libs/jQuery/jquery-3.7.1.min.js"></script>
     <script src="assets/libs/bootstrap/bootstrap.bundle.min.js"></script>
     <script src="assets/js/checkout.js"></script>
 </body>

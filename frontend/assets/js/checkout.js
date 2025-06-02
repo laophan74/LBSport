@@ -1,72 +1,57 @@
-document.addEventListener('DOMContentLoaded', async () => {
-    const summary = document.getElementById('cart-summary');
-    const paymentSelect = document.getElementById('payment-method');
-    // Trigger initial disabling of unselected payment fields
-    paymentSelect.dispatchEvent(new Event('change'));
-
-    // Load cart items
-    const res = await fetch('../backend/controllers/get_cart_items.php');
-    const data = await res.json();
-
-    if (data.status === 'success' && data.items.length > 0) {
-        let html = '<h5>Order Summary</h5><table class="table table-bordered"><thead><tr><th>Product</th><th>Qty</th><th>Price</th><th>Subtotal</th></tr></thead><tbody>';
-        data.items.forEach(item => {
-            html += `<tr>
-                <td>${item.name}</td>
-                <td>${item.quantity}</td>
-                <td>$${item.price}</td>
-                <td>$${(item.quantity * item.price).toFixed(2)}</td>
-            </tr>`;
-        });
-        html += `<tr class="table-secondary">
-                    <td colspan="3" class="text-end fw-bold">Total</td>
-                    <td class="fw-bold">$${data.total.toFixed(2)}</td>
+$(document).ready(function () {
+    // Load cart summary
+    $.get('../backend/controllers/cart.php', function (data) {
+        if (data.status === 'success' && data.items.length > 0) {
+            let html = '<h5>Order Summary</h5><table class="table table-bordered"><thead><tr><th>Product</th><th>Qty</th><th>Price</th><th>Subtotal</th></tr></thead><tbody>';
+            data.items.forEach(item => {
+                html += `<tr>
+                    <td>${item.name}</td>
+                    <td>${item.quantity}</td>
+                    <td>$${item.price}</td>
+                    <td>$${(item.price * item.quantity).toFixed(2)}</td>
                 </tr>`;
-        html += '</tbody></table>';
-        summary.innerHTML = html;
-    } else {
-        summary.innerHTML = `<div class="alert alert-info">Your cart is empty.</div>`;
-        document.getElementById('checkout-form').style.display = 'none';
-    }
-
-    // Show/hide payment form sections
-    paymentSelect.addEventListener('change', () => {
-        document.querySelectorAll('.payment-form').forEach(form => {
-            form.style.display = 'none';
-            // Disable all inputs inside
-            form.querySelectorAll('input').forEach(input => input.disabled = true);
-        });
-
-        const selected = paymentSelect.value;
-        if (selected) {
-            const section = document.getElementById('form-' + selected);
-            if (section) {
-                section.style.display = 'block';
-                // Enable only inputs in selected form
-                section.querySelectorAll('input').forEach(input => input.disabled = false);
-            }
+            });
+            html += `<tr class="table-secondary">
+                        <td colspan="3" class="text-end fw-bold">Total</td>
+                        <td class="fw-bold">$${data.total.toFixed(2)}</td>
+                     </tr></tbody></table>`;
+            $('#cart-summary').html(html);
+        } else {
+            $('#cart-summary').html('<div class="alert alert-info">Your cart is empty.</div>');
+            $('#checkout-form').hide();
         }
     });
 
-    // Form submit
-    document.getElementById('checkout-form').addEventListener('submit', async (e) => {
+    // Show/hide payment fields
+    $('#payment-method').on('change', function () {
+        $('.payment-form').hide().find('input').prop('disabled', true);
+        const selected = $(this).val();
+        if (selected) {
+            $(`#form-${selected}`).show().find('input').prop('disabled', false);
+        }
+    });
+
+    // Handle form submission
+    $('#checkout-form').on('submit', function (e) {
         e.preventDefault();
+
         if (!confirm('Are you sure you want to confirm this order?')) return;
 
-        const formData = new FormData(e.target);
-        const res = await fetch('../backend/controllers/process_checkout.php', {
-            method: 'POST',
-            body: formData
+        $.ajax({
+            url: '../backend/controllers/process_checkout.php',
+            type: 'POST',
+            data: $(this).serialize(),
+            success: function (res) {
+                if (res.status === 'success') {
+                    $('#message').html(`<div class="alert alert-success">${res.message}</div>`);
+                    setTimeout(() => location.href = 'order_history.php', 2000);
+                } else {
+                    $('#message').html(`<div class="alert alert-danger">${res.message}</div>`);
+                }
+            },
+            error: function () {
+                $('#message').html(`<div class="alert alert-danger">Server error. Please try again.</div>`);
+            }
         });
-
-        const result = await res.json();
-        const message = document.getElementById('message');
-
-        if (result.status === 'success') {
-            message.innerHTML = `<div class="alert alert-success">${result.message}</div>`;
-            setTimeout(() => window.location.href = 'order_history.php', 2000);
-        } else {
-            message.innerHTML = `<div class="alert alert-danger">${result.message}</div>`;
-        }
     });
 });
