@@ -1,6 +1,8 @@
-$(document).ready(function () {
-    loadCart();
 
+$(document).ready(function () {
+    loadCart(); // Load cart items when page is ready
+
+    // Function to load cart data from the server
     function loadCart() {
         $.getJSON('../backend/controllers/cart.php', function (res) {
             if (res.status === 'success') {
@@ -9,6 +11,7 @@ $(document).ready(function () {
                     return;
                 }
 
+                // Create table rows for each item in cart
                 let rows = res.items.map(item => `
                     <tr data-id="${item.cart_id}">
                         <td>${item.name}</td>
@@ -23,6 +26,7 @@ $(document).ready(function () {
                     </tr>
                 `).join('');
 
+                // Add total row
                 rows += `
                     <tr class="table-secondary">
                         <td colspan="4" class="text-end fw-bold">Total</td>
@@ -31,6 +35,7 @@ $(document).ready(function () {
                     </tr>
                 `;
 
+                // Display table in the cart container
                 $('#cart-container').html(`
                     <div class="table-responsive">
                         <table class="table table-bordered text-center align-middle">
@@ -57,12 +62,13 @@ $(document).ready(function () {
         });
     }
 
-    // Update quantity
+    // When user clicks "Update" button to change quantity
     $('#cart-container').on('click', '.update', function () {
-        const row = $(this).closest('tr');
-        const id = row.data('id');
-        const quantity = row.find('.qty').val();
+        const row = $(this).closest('tr'); // Get the row of the item
+        const id = row.data('id'); // Get cart item ID
+        const quantity = row.find('.qty').val(); // Get new quantity
 
+        // Send update request to server
         $.ajax({
             url: '../backend/controllers/cart.php',
             method: 'POST',
@@ -75,7 +81,7 @@ $(document).ready(function () {
         });
     });
 
-    // Remove item
+    // When user clicks "Remove" button to delete item
     $('#cart-container').on('click', '.remove', function () {
         if (!confirm('Remove this item?')) return;
 
@@ -93,7 +99,7 @@ $(document).ready(function () {
         });
     });
 
-    // Checkout
+    // When user clicks checkout button
     $('#cart-container').on('click', '#checkout-btn', function () {
         window.location.href = 'checkout.php';
     });

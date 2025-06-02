@@ -3,6 +3,7 @@ session_start();
 header('Content-Type: application/json');
 include('../includes/db_connect.php');
 
+// Check if user is logged in
 if (!isset($_SESSION['userid'])) {
     echo json_encode(['status' => 'error', 'message' => 'User not logged in']);
     exit;
@@ -11,7 +12,7 @@ if (!isset($_SESSION['userid'])) {
 $userid = $_SESSION['userid'];
 $method = $_SERVER['REQUEST_METHOD'];
 
-// GET: Fetch cart items
+// ========== GET: Load Cart Items ==========
 if ($method === 'GET') {
     $stmt = $conn->prepare("
         SELECT c.id AS cart_id, c.product_id, c.quantity, p.name, p.image, p.price
@@ -37,17 +38,17 @@ if ($method === 'GET') {
     exit;
 }
 
-// Handle POST: Add to cart or modify existing item
+// Read JSON input for POST requests
 $data = json_decode(file_get_contents("php://input"), true);
 $action = $data['action'] ?? '';
-$id = intval($data['id'] ?? 0);
+$id = intval($data['id'] ?? 0); // Cart item ID
 
-// POST: Add to cart (no action specified)
+// ========== POST: Add to Cart ==========
 if ($method === 'POST' && !$action) {
     $product_id = intval($data['product_id'] ?? 0);
     $quantity = max(1, intval($data['quantity'] ?? 1));
 
-    // Check if already in cart
+    // Check if product is already in cart
     $check = $conn->prepare("SELECT id, quantity FROM cart WHERE user_id = ? AND product_id = ?");
     $check->bind_param("ii", $userid, $product_id);
     $check->execute();
@@ -64,11 +65,14 @@ if ($method === 'POST' && !$action) {
         $success = $insert->execute();
     }
 
-    echo json_encode(['status' => $success ? 'success' : 'error', 'message' => $success ? 'Item added to cart' : 'Add failed']);
+    echo json_encode([
+        'status' => $success ? 'success' : 'error',
+        'message' => $success ? 'Item added to cart' : 'Add failed'
+    ]);
     exit;
 }
 
-// POST: Remove item
+// ========== POST: Remove Item ==========
 if ($action === 'remove') {
     $stmt = $conn->prepare("DELETE FROM cart WHERE id = ? AND user_id = ?");
     $stmt->bind_param("ii", $id, $userid);
@@ -82,9 +86,9 @@ if ($action === 'remove') {
     exit;
 }
 
-// POST: Update quantity
+// ========== POST: Update Quantity ==========
 if ($action === 'update') {
-    $quantity = max(1, intval($data['quantity'] ?? 1));
+    $quantity = max(1, intval($data['quantity'] ?? 1)); // Avoid zero or negative
 
     $stmt = $conn->prepare("UPDATE cart SET quantity = ? WHERE id = ? AND user_id = ?");
     $stmt->bind_param("iii", $quantity, $id, $userid);
@@ -98,4 +102,5 @@ if ($action === 'update') {
     exit;
 }
 
+// ========== Invalid Action ==========
 echo json_encode(['status' => 'error', 'message' => 'Invalid request']);
