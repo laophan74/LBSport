@@ -1,24 +1,18 @@
-.admin-container {
-    background-color: #f8f9fa;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  }
-  
-  .admin-section {
-    margin-top: 40px;
-  }
-  
-  .admin-section h2 {
-    border-left: 6px solid #007bff;
-    padding-left: 15px;
-    margin-bottom: 25px;
-    font-weight: bold;
-    color: #343a40;
-  }
-  
-  .table img {
-    max-width: 60px;
-    border-radius: 4px;
-  }
-  
+#sidebar {
+  width: 220px;
+  position: fixed;
+  top: 56px; /* height of topbar */
+  left: 0;
+  bottom: 0;
+  overflow-y: auto;
+}
+
+#main-content {
+  margin-left: 220px;
+  padding-top: 80px;
+}
+
+.nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+}
