@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="assets/libs/bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="assets/libs/fontawesome/css/all.min.css">
     <link rel="stylesheet" href="assets/css/admin.css">
+    <link rel="stylesheet" href="assets/css/topbar.css">
+
 </head>
 <body>
 
