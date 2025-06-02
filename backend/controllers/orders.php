@@ -16,7 +16,7 @@ $is_admin = ($role === 'admin');
 
 // ========== GET ==========
 if ($method === 'GET') {
-    // 1. Admin gets all orders (for admin dashboard)
+    // Admin gets all orders (for admin dashboard)
     if ($is_admin && !isset($_GET['order_id'])) {
         $stmt = $conn->prepare("SELECT * FROM orders ORDER BY order_date DESC");
         $stmt->execute();
@@ -27,13 +27,13 @@ if ($method === 'GET') {
             $orders[] = $row;
         }
 
-        echo json_encode($orders); // no wrapper (admin.js expects array)
+        echo json_encode($orders);
         $stmt->close();
         $conn->close();
         exit;
     }
 
-    // 2. Get order detail (user's own)
+    // Get order detail (user)
     if (isset($_GET['order_id'])) {
         $order_id = intval($_GET['order_id']);
 
@@ -69,7 +69,7 @@ if ($method === 'GET') {
         exit;
     }
 
-    // 3. Regular user gets their own orders
+    // Regular user gets their own orders
     $stmt = $conn->prepare("SELECT * FROM orders WHERE user_id = ? ORDER BY order_date DESC");
     $stmt->bind_param("i", $user_id);
     $stmt->execute();
@@ -117,7 +117,6 @@ if ($method === 'DELETE') {
     $order_id = $data['order_id'] ?? 0;
 
     if ($is_admin) {
-        // Admin hard deletes the order (no WHERE user_id)
         $stmt = $conn->prepare("DELETE FROM orders WHERE order_id = ?");
         $stmt->bind_param("i", $order_id);
         $stmt->execute();
@@ -142,7 +141,6 @@ if ($method === 'DELETE') {
     exit;
 }
 
-// ========== Unsupported ==========
 echo json_encode(['status' => 'error', 'message' => 'Unsupported request']);
 $conn->close();
 exit;

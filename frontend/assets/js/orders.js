@@ -1,6 +1,7 @@
 $(document).ready(function () {
     const container = $('#order-container');
 
+    // Show order list if on orders page
     if (container.length) {
         $.get('../backend/controllers/orders.php', function (res) {
             if (res.status === 'success') {
@@ -19,9 +20,7 @@ $(document).ready(function () {
                             <p class="card-text">Total: $${order.total_amount}</p>
                             <p class="card-text"><strong>Status:</strong> ${order.status}</p>
                             <a href="order_detail.php?order_id=${order.order_id}" class="btn btn-outline-primary me-2">View Details</a>
-                            ${order.can_cancel
-                                ? `<button class="btn btn-outline-danger cancel-btn" data-id="${order.order_id}">Cancel Order</button>`
-                                : ''}
+                            ${order.can_cancel ? `<button class="btn btn-outline-danger cancel-btn" data-id="${order.order_id}">Cancel Order</button>` : ''}
                         </div>
                     </div>`;
                 });
@@ -32,6 +31,7 @@ $(document).ready(function () {
             }
         });
 
+        // Handle cancel button click
         $(document).on('click', '.cancel-btn', function () {
             const orderId = $(this).data('id');
             if (!confirm("Are you sure you want to cancel this order?")) return;
@@ -57,6 +57,8 @@ $(document).ready(function () {
     }
 
     const detailContainer = $('#order-detail');
+
+    // Show one order detail
     if (detailContainer.length) {
         $.get(`../backend/controllers/orders.php?order_id=${ORDER_ID}`, function (res) {
             if (res.status !== 'success') {
@@ -65,6 +67,7 @@ $(document).ready(function () {
             }
 
             const yellowStar = '<i class="fas fa-star fa-xs text-warning"></i>';
+
             const itemsHTML = res.items.map(item => {
                 const reviewed = item.review !== null;
                 const reviewHTML = reviewed ? `
@@ -76,14 +79,18 @@ $(document).ready(function () {
                         <button class="btn btn-sm btn-outline-danger delete-btn mt-2" data-product-id="${item.product_id}">Delete</button>
                     </div>
                     <form class="review-form d-none mt-3" data-product-id="${item.product_id}">
-                        <div class="mb-2">${[1,2,3,4,5].map(n => `<input type="radio" name="rating" value="${n}" ${item.review.rating==n ? 'checked' : ''}> ${n}`).join(' ')}</div>
+                        <div class="mb-2">
+                            ${[1,2,3,4,5].map(n => `<input type="radio" name="rating" value="${n}" ${item.review.rating==n ? 'checked' : ''}> ${n}`).join(' ')}
+                        </div>
                         <textarea name="comment" class="form-control mb-2">${item.review.comment}</textarea>
                         <button class="btn btn-sm btn-primary">Update</button>
                         <button type="button" class="btn btn-sm btn-secondary cancel-btn">Cancel</button>
                     </form>
                 ` : `
                     <form class="review-form mt-2" data-product-id="${item.product_id}">
-                        <div class="mb-2">${[1,2,3,4,5].map(n => `<input type="radio" name="rating" value="${n}"> ${n}`).join(' ')}</div>
+                        <div class="mb-2">
+                            ${[1,2,3,4,5].map(n => `<input type="radio" name="rating" value="${n}"> ${n}`).join(' ')}
+                        </div>
                         <textarea name="comment" class="form-control mb-2"></textarea>
                         <button class="btn btn-sm btn-primary">Submit Review</button>
                     </form>`;
@@ -103,6 +110,7 @@ $(document).ready(function () {
 
             detailContainer.html(itemsHTML);
 
+            // Submit review form
             $('.review-form').on('submit', function (e) {
                 e.preventDefault();
                 const form = $(this);
@@ -111,17 +119,22 @@ $(document).ready(function () {
                 const comment = form.find('textarea[name="comment"]').val();
 
                 $.post('../backend/controllers/submit_review.php', JSON.stringify({ product_id: productId, rating, comment }), function (res) {
-                    if (res === 'success') location.reload();
-                    else alert(res);
+                    if (res === 'success') {
+                        location.reload();
+                    } else {
+                        alert(res);
+                    }
                 }, 'text');
             });
 
+            // Switch to edit review mode
             $('.edit-btn').on('click', function () {
                 const id = $(this).data('product-id');
                 $(`.review-display[data-product-id='${id}']`).hide();
                 $(`.review-form[data-product-id='${id}']`).removeClass('d-none');
             });
 
+            // Cancel edit
             $('.cancel-btn').on('click', function () {
                 const form = $(this).closest('.review-form');
                 const id = form.data('product-id');
@@ -129,12 +142,17 @@ $(document).ready(function () {
                 $(`.review-display[data-product-id='${id}']`).show();
             });
 
+            // Delete review
             $('.delete-btn').on('click', function () {
                 const id = $(this).data('product-id');
                 if (!confirm('Delete this review?')) return;
+
                 $.post('../backend/controllers/delete_review.php', JSON.stringify({ product_id: id }), function (res) {
-                    if (res.status === 'success') location.reload();
-                    else alert(res.message);
+                    if (res.status === 'success') {
+                        location.reload();
+                    } else {
+                        alert(res.message);
+                    }
                 }, 'json');
             });
         });
