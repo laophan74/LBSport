@@ -24,6 +24,11 @@ if (!isset($_SESSION['userid'])) {
             <div id="cart-container">
                 <p class="text-center">Loading cart...</p>
             </div>
+            <div class="text-center mb-4">
+            <button type="button" class="btn btn-outline-secondary" onclick="history.back()">
+                <i class="fas fa-arrow-left"></i> Back to Previous Page
+            </button>
+        </div>
         </main>
 
         <?php include 'includes/footer.php'; ?>
