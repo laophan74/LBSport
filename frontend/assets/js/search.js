@@ -37,7 +37,7 @@ async function fetchAndRenderResults() {
           <p class="text-primary fw-bold">$${p.price}</p>
           <p class="card-text">${p.description}</p>
           <div class="mt-auto d-flex align-items-center gap-2">
-            <input type="number" class="form-control form-control-sm" id="qty-${p.id}" value="1" min="1" style="width: 60px;">
+            <input type="number" class="form-control form-control-sm" id="qty-${p.id}" value="1" min="1" style="width: 60px;" onclick="event.stopPropagation()" onkeydown="event.stopPropagation()">
             <button class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation(); addToCart(${p.id}, document.getElementById('qty-${p.id}').value)">
               <i class="fas fa-cart-plus"></i> Add
             </button>
