@@ -6,6 +6,7 @@
     color: #ffffff;
     text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7);
     height: 550px;
+    margin-top: -10px;
   }
   
   .product-card {
