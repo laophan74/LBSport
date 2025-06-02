@@ -1,96 +1,56 @@
-function getProductIdFromURL() {
-  const params = new URLSearchParams(window.location.search);
-  return params.get("id");
-}
+$(document).ready(function () {
+  const productId = new URLSearchParams(window.location.search).get("id");
 
-function renderStars(rating) {
-  return Array.from({ length: 5 }, (_, i) =>
-    `<span class="text-warning">${i < rating ? "★" : "☆"}</span>`
-  ).join('');
-}
-
-async function loadProductDetails() {
-  const productId = getProductIdFromURL();
-  if (!productId) return;
-
-  try {
-    const res = await fetch(`../backend/controllers/products.php?id=${productId}`);
-    const product = await res.json();
-
-    if (product) {
-      document.getElementById("product-name").textContent = product.name;
-      document.getElementById("product-image").src = product.image;
-      document.getElementById("product-price").textContent = `$${product.price}`;
-      document.getElementById("product-rating").innerHTML = renderStars(product.rating);
-      document.getElementById("product-description").textContent = product.description;
-
-      document.getElementById("addToCartBtn").addEventListener("click", () => {
-        const quantity = parseInt(document.getElementById("quantity").value) || 1;
-        addToCart(product.id, quantity);
-      });
-
-    } else {
-      document.querySelector(".detail-box").innerHTML = "<p>Product not found.</p>";
-    }
-
-  } catch (error) {
-    console.error("Error loading product:", error);
-    document.querySelector(".detail-box").innerHTML = "<p>Error loading product details.</p>";
+  function renderStars(rating) {
+    return Array.from({ length: 5 }, (_, i) =>
+      `<span class="text-warning">${i < rating ? "★" : "☆"}</span>`
+    ).join('');
   }
-}
 
-async function loadReviews() {
-  const productId = getProductIdFromURL();
-  if (!productId) return;
-
-  try {
-    const res = await fetch(`../backend/controllers/reviews.php?product_id=${productId}`);
-    const reviews = await res.json();
-    const reviewList = document.getElementById("review-list");
-    reviewList.innerHTML = "";
-
-    if (reviews.length === 0) {
-      reviewList.innerHTML = "<p>No reviews yet.</p>";
+  $.get(`../backend/controllers/products.php?id=${productId}`, function (product) {
+    if (!product) {
+      $('.detail-box').html("<p>Product not found.</p>");
       return;
     }
 
-    reviews.forEach(review => {
-      const item = document.createElement("div");
-      item.className = "review-item mb-3";
-      item.innerHTML = `
-        <strong>${review.username}</strong>
-        <span class="text-muted small">(${new Date(review.created_at).toLocaleDateString()})</span>
-        <div class="text-warning mb-1">${renderStars(review.rating)}</div>
-        <p>${review.comment}</p>
-      `;
-      reviewList.appendChild(item);
+    $('#product-name').text(product.name);
+    $('#product-image').attr('src', product.image);
+    $('#product-price').text(`$${product.price}`);
+    $('#product-rating').html(renderStars(product.rating));
+    $('#product-description').text(product.description);
+
+    $('#addToCartBtn').click(function () {
+      const quantity = parseInt($('#quantity').val()) || 1;
+
+      $.ajax({
+        url: '../backend/controllers/cart.php',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ product_id: product.id, quantity }),
+        success: function (res) {
+          alert(res.status === 'success' ? 'Added to cart!' : res.message);
+        }
+      });
     });
-
-  } catch (error) {
-    console.error("Error loading reviews:", error);
-    document.getElementById("review-list").innerHTML = "<p>Error loading reviews.</p>";
-  }
-}
-
-async function addToCart(productId, quantity) {
-  const res = await fetch("../backend/controllers/cart.php", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      product_id: productId,
-      quantity: quantity,
-    })
   });
 
-  const result = await res.json();
-  if (result.status === "success") {
-    alert("Added to cart!");
-  } else {
-    alert("Failed: " + result.message);
-  }
-}
+  $.get(`../backend/controllers/reviews.php?product_id=${productId}`, function (reviews) {
+    const $reviewList = $('#review-list').empty();
 
-document.addEventListener("DOMContentLoaded", () => {
-  loadProductDetails();
-  loadReviews();
+    if (!reviews.length) {
+      $reviewList.html("<p>No reviews yet.</p>");
+      return;
+    }
+
+    reviews.forEach(r => {
+      $reviewList.append(`
+        <div class="review-item mb-3">
+          <strong>${r.username}</strong>
+          <span class="text-muted small">(${new Date(r.created_at).toLocaleDateString()})</span>
+          <div class="text-warning mb-1">${renderStars(r.rating)}</div>
+          <p>${r.comment}</p>
+        </div>
+      `);
+    });
+  });
 });
