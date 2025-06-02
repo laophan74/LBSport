@@ -1,16 +1,18 @@
-// LOGIN
+// Handle login form submission
 $('#loginForm').on('submit', function (e) {
-    e.preventDefault();
+    e.preventDefault(); // Stop page from refreshing
 
     const email = $('#email').val().trim();
     const password = $('#password').val().trim();
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
 
+    // Check if email format is valid
     if (!emailRegex.test(email)) {
         $('#error-message').text('Please enter a valid email address.');
         return;
     }
 
+    // Send login request to server
     $.post('../backend/controllers/auth.php', {
         action: 'login',
         email: email,
@@ -30,14 +32,14 @@ $('#loginForm').on('submit', function (e) {
     });
 });
 
-// Register
+// Handle registration form submission
 $('#registerForm').on('submit', function (e) {
     e.preventDefault();
 
     const username = $('#username').val().trim();
     const email = $('#email').val().trim();
     const password = $('#password').val().trim();
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
 
     if (!emailRegex.test(email)) {
         $('#message').text('Please enter a valid email address.')
@@ -46,12 +48,14 @@ $('#registerForm').on('submit', function (e) {
         return;
     }
 
+    // Send data to server for registration
     $.post('../backend/controllers/auth.php', {
         action: 'register',
         username: username,
         email: email,
         password: password
     }, function (response) {
+
         if (response.status === 'success') {
             $('#message').text('Registration successful! Redirecting to login...')
                          .removeClass()
@@ -68,7 +72,7 @@ $('#registerForm').on('submit', function (e) {
     }, 'json');
 });
 
-// Account update
+// Handle account password update
 $('#accountForm').on('submit', function (e) {
     e.preventDefault();
 
@@ -81,6 +85,7 @@ $('#accountForm').on('submit', function (e) {
         return;
     }
 
+    // Send update request to server
     $.post('../backend/controllers/auth.php', {
         action: 'update_password',
         oldPassword,
@@ -98,7 +103,3 @@ $('#accountForm').on('submit', function (e) {
         $('#msg').text('Server error.').removeClass().addClass('text-danger');
     });
 });
-
-
-
-

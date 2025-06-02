@@ -1,17 +1,21 @@
 <?php
+// Start session to keep user logged in
 session_start();
+
 header('Content-Type: application/json');
 include('../includes/db_connect.php');
 
+// Get action from request (like 'login' or 'register')
 $action = $_POST['action'] ?? '';
 
-// === REGISTER ===
+// ============ REGISTER ============ //
 if ($action === 'register') {
+    // Get form input values
     $username = trim($_POST['username']);
     $email = trim($_POST['email']);
     $password = trim($_POST['password']);
 
-    // Check if email exists
+    // Check if email is already registered
     $check = $conn->prepare("SELECT id FROM users WHERE email = ?");
     $check->bind_param("s", $email);
     $check->execute();
@@ -22,7 +26,6 @@ if ($action === 'register') {
         exit;
     }
 
-    // Insert user
     $role = 'customer';
     $stmt = $conn->prepare("INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)");
     $stmt->bind_param("ssss", $username, $email, $password, $role);
@@ -36,11 +39,12 @@ if ($action === 'register') {
     exit;
 }
 
-// === LOGIN ===
+// ============ LOGIN ============ //
 if ($action === 'login') {
     $email = trim($_POST['email']);
     $password = trim($_POST['password']);
 
+    // Check if user exists with the given email
     $stmt = $conn->prepare("SELECT id, username, role, password FROM users WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
@@ -49,6 +53,7 @@ if ($action === 'login') {
     $stmt->fetch();
 
     if ($stmt->num_rows > 0 && $password === $db_password) {
+        // Save user data into session
         $_SESSION['userid'] = $id;
         $_SESSION['username'] = $username;
         $_SESSION['role'] = $role;
@@ -61,7 +66,7 @@ if ($action === 'login') {
     exit;
 }
 
-// === GET ALL USERS ===
+// ============ GET ALL USERS (Admin Use) ============ //
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $result = mysqli_query($conn, "SELECT id, username, email, role, created_at FROM users");
     $users = [];
@@ -74,12 +79,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     exit;
 }
 
-// === UPDATE PASSWORD ===
+// ============ UPDATE PASSWORD ============ //
 if ($action === 'update_password') {
+    // Get current user ID from session
     $userid = $_SESSION['userid'];
     $oldPassword = trim($_POST['oldPassword']);
     $newPassword = trim($_POST['newPassword']);
 
+    // Get the current password from DB
     $stmt = $conn->prepare("SELECT password FROM users WHERE id = ?");
     $stmt->bind_param("i", $userid);
     $stmt->execute();
@@ -100,9 +107,9 @@ if ($action === 'update_password') {
     } else {
         echo json_encode(['status' => 'error', 'message' => 'Failed to update password.']);
     }
+
     exit;
 }
 
-
-// === Invalid Request ===
+// ============ INVALID REQUEST ============ //
 echo json_encode(['status' => 'error', 'message' => 'Invalid request.']);
