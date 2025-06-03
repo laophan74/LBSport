@@ -6,6 +6,14 @@ header.fixed-top {
   padding: 10px;
   background-color: #55a5b1 !important;
 }
+
+.navbar-brand img {
+  max-height: 50px;
+  max-width: auto;
+  width: auto;
+  height: auto;
+}
+
   
 .navbar .nav-link,
 .navbar .navbar-brand {

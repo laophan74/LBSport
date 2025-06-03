@@ -3,10 +3,17 @@
   background-size: cover;
   background-position: center;
   padding: 100px 0;
-  color: #ffffff;
-  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7);
+  /* color: #ffffff;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7); */
   height: 550px;
   margin-top: -10px;
+}
+.sport-showcase h1,
+.sport-showcase p {
+  font-size: 2.2rem; /* Increase text size */
+  font-weight: bold; /* Make text stand out */
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9); /* Stronger shadow for depth */
+  opacity: 0.9; /* Slight transparency */
 }
   
 .product-card {

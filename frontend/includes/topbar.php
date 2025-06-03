@@ -1,7 +1,11 @@
 <?php session_start(); ?>
 <header class="fixed-top bg-white shadow-sm">
     <nav class="navbar navbar-expand-lg navbar-light container">
-        <a class="navbar-brand fw-bold" href="home.php">LBSport</a>
+        <a class="navbar-brand fw-bold" href="home.php">
+            <img src="assets/img/logo.png" alt="LBSport Logo">
+            LBSport
+        </a>
+
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
