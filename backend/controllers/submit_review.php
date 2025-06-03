@@ -33,7 +33,24 @@ if ($stmt->num_rows > 0) {
 }
 
 if ($stmt->execute()) {
-    echo "success";
+    // Calculate the average rating of the product
+    $stmt->close();
+    $stmt = $conn->prepare("SELECT AVG(rating) as avg_rating FROM reviews WHERE product_id = ?");
+    $stmt->bind_param("i", $product_id);
+    $stmt->execute();
+    $stmt->bind_result($avg_rating);
+    $stmt->fetch();
+
+    // Update the product rating in the products table
+    $stmt->close();
+    $stmt = $conn->prepare("UPDATE products SET rating = ? WHERE id = ?");
+    $stmt->bind_param("di", $avg_rating, $product_id);
+
+    if ($stmt->execute()) {
+        echo "success";
+    } else {
+        echo "Error updating product rating.";
+    }
 } else {
     echo "Error saving review.";
 }

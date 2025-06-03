@@ -127,10 +127,12 @@ $(document).ready(function () {
                 const productId = form.data('product-id');
                 const rating = form.find('input[name="rating"]:checked').val();
                 const comment = form.find('textarea[name="comment"]').val();
-
+            
                 $.post('../backend/controllers/submit_review.php', JSON.stringify({ product_id: productId, rating, comment }), function (res) {
-                    if (res === 'success') {
-                        location.reload();
+                    // Check if the response is 'success'
+                    if (res.trim() === 'success') {
+                        alert('Review updated successfully!');
+                        location.replace(window.location.href);
                     } else {
                         alert(res);
                     }
