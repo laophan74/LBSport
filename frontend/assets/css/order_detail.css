@@ -11,3 +11,8 @@
     border: 1px solid #ccc;
     border-radius: 4px;
 } 
+
+.img-fixed-width {
+  max-width: 200px;
+  height: auto;
+}

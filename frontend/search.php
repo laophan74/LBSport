@@ -18,7 +18,7 @@
     <!-- Filter section -->
     <div class="row g-3 mt-3 mb-4">
         <div class="col-md-3">
-            <label for="searchQuery" class="form-label">Search</label>
+            <label for="searchQuery" class="form-label"><i class="fas fa-search"></i></label>
             <input type="text" class="form-control" id="searchQuery" placeholder="e.g. racket, shoe">
         </div>
         <div class="col-md-3">
@@ -39,7 +39,7 @@
             <input type="number" class="form-control" id="maxPrice" placeholder="999">
         </div>
         <div class="col-md-2 d-flex align-items-end gap-2">
-            <button class="btn btn-primary w-100" id="applyFilters">Apply Filters</button>
+            <button class="btn btn-primary w-100" id="applyFilters">Search</button>
             <button class="btn btn-secondary w-100" id="clearFilters">Clear</button>
         </div>
     </div>

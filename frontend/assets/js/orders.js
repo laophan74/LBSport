@@ -80,7 +80,12 @@ $(document).ready(function () {
                     </div>
                     <form class="review-form d-none mt-3" data-product-id="${item.product_id}">
                         <div class="mb-2">
-                            ${[1,2,3,4,5].map(n => `<input type="radio" name="rating" value="${n}" ${item.review.rating==n ? 'checked' : ''}> ${n}`).join(' ')}
+                            ${[1,2,3,4,5].map(n =>
+                                `<label>
+                                    <input type="radio" name="rating" value="${n}" ${item.review.rating == n ? 'checked' : ''}>
+                                    <span class="star">${yellowStar.repeat(n)}</span>
+                                 </label>
+                                `).join('')}
                         </div>
                         <textarea name="comment" class="form-control mb-2">${item.review.comment}</textarea>
                         <button class="btn btn-sm btn-primary">Update</button>
@@ -89,7 +94,12 @@ $(document).ready(function () {
                 ` : `
                     <form class="review-form mt-2" data-product-id="${item.product_id}">
                         <div class="mb-2">
-                            ${[1,2,3,4,5].map(n => `<input type="radio" name="rating" value="${n}"> ${n}`).join(' ')}
+                            ${[1,2,3,4,5].map(n =>
+                                 `<label>
+                                    <input type="radio" name="rating" value="${n}">
+                                    <span class="star">${yellowStar.repeat(n)}</span>
+                                    </label>
+                                    `).join(' ')}
                         </div>
                         <textarea name="comment" class="form-control mb-2"></textarea>
                         <button class="btn btn-sm btn-primary">Submit Review</button>
@@ -98,7 +108,7 @@ $(document).ready(function () {
                 return `
                     <div class="card mb-3">
                         <div class="card-body d-flex">
-                            <img src="${item.image}" alt="${item.name}" class="me-3" width="80">
+                            <img src="${item.image}" alt="${item.name}" class="me-3 img-fixed-width">
                             <div>
                                 <h5>${item.name}</h5>
                                 <p>$${item.price} × ${item.quantity} = $${(item.price * item.quantity).toFixed(2)}</p>
