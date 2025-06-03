@@ -68,7 +68,7 @@ function renderResults() {
 
 // Fetch product data from backend
 async function fetchAndRenderResults() {
-  const res = await fetch("../backend/controllers/products.php?_=" + new Date().getTime()); // Prevent caching
+  const res = await fetch("../backend/controllers/products.php?_=" + new Date().getTime());
   allProducts = await res.json();
   renderResults();
 }
@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("applyFilters").addEventListener("click", renderResults);
 
   // Clear all filters
-  document.getElementById("clearFilters").addEventListener("click", () => {
+    document.getElementById("clearFilters").addEventListener("click", () => {
     document.getElementById("searchQuery").value = "";
     document.getElementById("typeFilter").value = "";
     document.getElementById("minPrice").value = "";
