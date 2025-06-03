@@ -56,7 +56,7 @@ $(document).ready(function () {
             <p class="card-text">${p.description}</p>
             <div class="mt-auto d-flex align-items-center gap-2">
               <input type="number" class="form-control form-control-sm" id="qty-${p.id}" value="1" min="1" style="width: 60px;" onclick="event.stopPropagation()" onkeydown="event.stopPropagation()">
-              <button class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation(); addToCart(${p.id}, $('#qty-${p.id}').val())">
+              <button class="btn btn-sm btn-outline-primary add-to-cart-btn" data-product-id="${p.id}" data-qty-id="qty-${p.id}">
                 <i class="fas fa-cart-plus"></i> Add
               </button>
             </div>
@@ -110,4 +110,11 @@ $(document).ready(function () {
       }
     });
   }
+
+  // Use event delegation to bind the "Add to Cart" click event
+  $('#search-results').on('click', '.add-to-cart-btn', function () {
+    const productId = $(this).data('product-id');
+    const quantity = $(`#${$(this).data('qty-id')}`).val() || 1;
+    addToCart(productId, quantity);
+  });
 });
