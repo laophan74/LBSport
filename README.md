@@ -4,32 +4,32 @@ A sports e-commerce site using **HTML/CSS/JS** (frontend) and **PHP** (backend).
 
 ---
 
-## 🌐 Live Site Access
+## Live Site Access
 
 **URL:**  
 [student.cdms.westernsydney.edu.au/~22121468/LBSport/index.php](http://student.cdms.westernsydney.edu.au/~22121468/LBSport/index.php)
 
-### 🔐 Admin Login
+### Admin Login
 - **Email:** admin@gmail.com  
 - **Password:** 1
 
-### 👤 User Login
+### User Login
 - **Email:** bobtest@gmail.com  
 - **Password:** bob
 
 ---
 
-## 💻 Installation Guide
+## Installation Guide
 
 To install the **LBSport** website on another computer:
 
-### 📋 Requirements
+### Requirements
 
 - XAMPP (or any Apache, MySQL, PHP stack)
 - PHP 7.x or above
 - MySQL 5.x or above
 
-### 🛠️ Steps
+### Steps
 
 1. **Unzip the project** into the `htdocs` directory (for XAMPP), for example:  
    `C:\xampp\htdocs\LBSport\`
