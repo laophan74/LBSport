@@ -7,7 +7,7 @@ if (!isset($_GET['product_id'])) {
     exit;
 }
 
-$product_id = intval($_GET['product_id']);
+$product_id = $_GET['product_id'];
 
 $query = "
     SELECT r.rating, r.comment, r.created_at, u.username

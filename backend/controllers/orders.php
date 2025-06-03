@@ -77,7 +77,7 @@ if ($method === 'GET') {
 
     $orders = [];
     while ($row = $result->fetch_assoc()) {
-        $row['can_cancel'] = (strtolower($row['status']) === 'processing');
+        $row['can_cancel'] = in_array(strtolower($row['status']), ['processing', 'pending']);
         $orders[] = $row;
     }
 

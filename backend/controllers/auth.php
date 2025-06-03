@@ -16,7 +16,7 @@ if ($action === 'register') {
     $password = trim($_POST['password']);
 
     // Check if email is already registered
-    $check = $conn->prepare("SELECT id FROM users WHERE email = ?");
+    $check = $conn->prepare("SELECT id FROM users WHERE email = ?"); //https://www.w3schools.com/php/php_mysql_prepared_statements.asp
     $check->bind_param("s", $email);
     $check->execute();
     $check->store_result();
@@ -71,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $result = mysqli_query($conn, "SELECT id, username, email, role, created_at FROM users");
     $users = [];
 
-    while ($row = mysqli_fetch_assoc($result)) {
+    while ($row = mysqli_fetch_assoc($result)) { //https://www.php.net/manual/en/mysqli-result.fetch-assoc.php
         $users[] = $row;
     }
 
@@ -83,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 if ($action === 'update_password') {
     // Get current user ID from session
     $userid = $_SESSION['userid'];
-    $oldPassword = trim($_POST['oldPassword']);
+    $oldPassword = trim($_POST['oldPassword']); //https://www.php.net/trim
     $newPassword = trim($_POST['newPassword']);
 
     // Get the current password from DB
