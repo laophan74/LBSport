@@ -126,7 +126,7 @@ if ($method === 'DELETE') {
         exit;
     }
 
-    // Regular user can only cancel 'processing' orders
+    // Regular user can only cancel 'processing or pending' orders
     $stmt = $conn->prepare("UPDATE orders SET status = 'cancelled' WHERE order_id = ? AND user_id = ? AND LOWER(status) IN ('processing', 'pending')");
     $stmt->bind_param("ii", $order_id, $user_id);
     $stmt->execute();
