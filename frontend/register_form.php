@@ -31,7 +31,7 @@
 
                                 <div class="mb-3">
                                     <label for="email" class="form-label">Email</label>
-                                    <input type="email" id="email" name="email" class="form-control" required>
+                                    <input type="email" id="registeremail" name="email" class="form-control" required>
                                 </div>
 
                                 <div class="mb-3">

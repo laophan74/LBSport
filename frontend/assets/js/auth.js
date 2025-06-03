@@ -38,9 +38,9 @@ $('#registerForm').on('submit', function (e) {
     e.preventDefault();
 
     const username = $('#username').val().trim();
-    const email = $('#email').val().trim();
+    const email = $('#registeremail').val().trim();
     const password = $('#password').val().trim();
-    const emailRegex = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!emailRegex.test(email)) {
         $('#message').text('Please enter a valid email address.')
